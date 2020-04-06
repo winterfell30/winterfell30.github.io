@@ -1,0 +1,286 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>位运算在ACM中的简单运用 (HDU 2095) | winterfell30</title>
+  <meta name="author" content="Winterfell30">
+  
+  <meta name="description" content="Always Challenge Miracle">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="位运算在ACM中的简单运用 (HDU 2095)">
+  <meta property="og:site_name" content="winterfell30">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="winterfell30" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+</html>
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">winterfell30</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about/index.html">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-07-08T13:51:21.000Z"><a href="/2015/07/08/weiyunsuan/">2015-07-08</a></time>
+      
+      
+  
+    <h1 class="title">位运算在ACM中的简单运用 (HDU 2095)</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>RT<br><a id="more"></a></p>
+<hr>
+<p>此文有一些事看过的一些位运算资料，还有一些自己的总结，因为有点多就不放原文地址了。。。</p>
+<hr>
+<p>运算方法有六种：<br><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&amp;       与运算   </span></span><br><span class="line"><span class="string">|       或运算  </span></span><br><span class="line">^       异或运算  </span><br><span class="line"><span class="symbol">~       非运算(求补)  </span></span><br><span class="line"><span class="symbol">&gt;&gt;      右移运算  </span></span><br><span class="line"><span class="symbol">&lt;&lt;      左移运算</span></span><br></pre></td></tr></table></figure></p>
+<p>运用这些基本的运算，我们可以解决acm所需的各种运算,给Bit赋1，赋0，给他的值取反，还有好多段操作。如下：</p>
+<p>  功能              |          示例            |    位运算<br>———————-+—————————+——————–<br>去掉最后一位          | (101101-&gt;10110)          | x &gt;&gt; 1<br>在最后加一个0        | (101101-&gt;1011010)        | x &lt; &lt; 1<br>在最后加一个1        | (101101-&gt;1011011)        | x &lt; &lt; 1+1<br>把最后一位变成1      | (101100-&gt;101101)          | x | 1<br>把最后一位变成0      | (101101-&gt;101100)          | x | 1-1<br>最后一位取反          | (101101-&gt;101100)          | x ^ 1<br>把右数第k位变成1      | (101001-&gt;101101,k=3)      | x | (1 &lt; &lt; (k-1))<br>把右数第k位变成0      | (101101-&gt;101001,k=3)      | x &amp; ~ (1 &lt; &lt; (k-1))<br>右数第k位取反        | (101001-&gt;101101,k=3)      | x ^ (1 &lt; &lt; (k-1))<br>取末三位              | (1101101-&gt;101)            | x &amp; 7<br>取末k位              | (1101101-&gt;1101,k=5)      | x &amp; ((1 &lt; &lt; k)-1)<br>取右数第k位          | (1101101-&gt;1,k=4)          | x &gt;&gt; (k-1) &amp; 1<br>把末k位变成1          | (101001-&gt;101111,k=4)      | x | (1 &lt; &lt; k-1)<br>末k位取反            | (101001-&gt;100110,k=4)      | x ^ (1 &lt; &lt; k-1)<br>把右边连续的1变成0    | (100101111-&gt;100100000)    | x &amp; (x+1)<br>把右起第一个0变成1    | (100101111-&gt;100111111)    | x | (x+1)<br>把右边连续的0变成1    | (11011000-&gt;11011111)      | x | (x-1)<br>取右边连续的1        | (100101111-&gt;1111)        | (x ^ (x+1)) &gt;&gt; 1<br>去掉右起第一个1的左边 | (100101000-&gt;1000)        | x &amp; (x ^ (x-1))<br>判断奇数       (x&amp;1)==1<br>判断偶数 (x&amp;1)==0       </p>
+<p>乘除法是很消耗时间的，一般情况下位运算的速度要相对快一些。传说用位运算效率提高了60%。</p>
+<p>常用技巧：</p>
+<p>1、  用于整数的奇偶性判断<br>一个整数a, a &amp; 1 这个表达式可以用来判断a的奇偶性。二进制的末位为0表示偶数，最末位为1表示奇数。使用a%2来判断奇偶性和a &amp; 1是一样的作用，但是a &amp; 1要快好多。</p>
+<p>2、  判断n是否是2的正整数冪<br>(!(n&amp;(n-1)) ) &amp;&amp; n<br>举个例子：<br>如果n = 16 = 10000， n-1 = 1111<br>那么：<br><figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">10000</span><br><span class="line">&amp;1111</span><br><span class="line">---------</span><br><span class="line">0</span><br></pre></td></tr></table></figure></p>
+<p>再举一个例子：如果n = 256 = 100000000， n-1 = 11111111<br>那么：<br><figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">100000000</span><br><span class="line">&amp;11111111</span><br><span class="line">----------</span><br><span class="line">0</span><br></pre></td></tr></table></figure></p>
+<p>好！看完上面的两个小例子，相信大家都有一个感性的认识。从理论上讲，如果一个数a他是2的正整数幂，那么a 的二进制形式必定为1000…..（后面有0个或者多个0），那么结论就很显然了。</p>
+<p>3、对于正整数的模运算（注意，负数不能这么算）<br>先说下比较简单的：<br>乘除法是很消耗时间的，只要对数左移一位就是乘以2，右移一位就是除以2，传说用位运算效率提高了60%。<br>乘2^k 众所周知： n&lt;&lt;k。所以你以后还会傻傻地去敲2566*4的结果10264吗？直接2566&lt;&lt;2就搞定了，又快又准确。<br>除2^k众所周知： n&gt;&gt;k。<br>那么 mod 2^k 呢？（对2的倍数取模）<br>n&amp;((1&lt;&lt;k)-1)<br>用通俗的言语来描述就是,对2的倍数取模，只要将数与2的倍数-1做按位与运算即可。<br>好！方便理解就举个例子吧。<br>思考：如果结果是要求模2^k时，我们真的需要每次都取模吗?<br>在此很容易让人想到快速幂取模法。<br>快速幂取模算法<br>经常做题目的时候会遇到要计算 a^b mod c 的情况，这时候，一个不小心就TLE了。那么如何解决这个问题呢？位运算来帮你吧。</p>
+<p>首先介绍一下秦九韶算法：(数值分析讲得很清楚)<br>把一个n次多项式f(x) = a[n]x^n+a[n-1]x^(n-1)+……+a[1]x+a[0]改写成如下形式：<br>　　f(x) = a[n]x^n+a[n-1]x^(n-1))+……+a[1]x+a[0]<br>　　= (a[n]x^(n-1)+a[n-1]x^(n-2)+……+a[1])x+a[0]<br>　　= ((a[n]x^(n-2)+a[n-1]x^(n-3)+……+a[2])x+a[1])x+a[0]<br>　　=. …..<br>　　= (……((a[n]x+a[n-1])x+a[n-2])x+……+a[1])x+a[0].<br>　　求多项式的值时，首先计算最内层括号内一次多项式的值，即<br>　　v[1]=a[n]x+a[n-1]<br>　　然后由内向外逐层计算一次多项式的值，即<br>　　v[2]=v[1]x+a[n-2]<br>　　v[3]=v[2]x+a[n-3]<br>　　……<br>　　v[n]=v[n-1]x+a[0]<br>这样，求n次多项式f(x)的值就转化为求n个一次多项式的值。</p>
+<p>好！有了前面的基础知识，我们开始解决问题吧<br>由(a × b) mod c=( (a mod c) × b) mod c.<br>我们可以将 b先表示成就：<br>  b = a[t] × 2^t + a[t-1]× 2^(t-1) + …… + a[0] × 2^0.  (a[i]=[0,1]).<br>这样我们由 a^b  mod  c = (a^(a[t] × 2^t  +  a[t-1] × 2^（t-1） + …a[0] × 2^0) mod c.<br>然而我们求  a^( 2^(i+1) ) mod c=( (a^(2^i)) mod c)^2 mod c .求得。<br>具体实现如下：<br>使用秦九韶算法思想进行快速幂模算法，简洁漂亮<br><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 快速计算 (a ^ p) % m 的值</span></span><br><span class="line">__int64 FastM(__int64 a, __int64 p, __int64 m)</span><br><span class="line">&#123; </span><br><span class="line">    <span class="keyword">if</span> (p == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    __int64  r = a % m;</span><br><span class="line">    __int64  k = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (p &gt; <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> ((p &amp; <span class="number">1</span>)!=<span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            k = (k * r) % m; </span><br><span class="line">        &#125;</span><br><span class="line">        r = (r * r) % m;</span><br><span class="line">        p &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">   &#125;</span><br><span class="line">        <span class="keyword">return</span> (r * k) % m;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>4、按位异或运算<br>我们还可以得到一个很诡异的swap操作：<br>a  ^=  b;  b ^= a; a ^= b;<br>即a^=b^=a^=b;<br>自己拿起笔来模拟一下就很清楚的了。</p>
+<hr>
+<p>我一直感觉异或运算是很神奇的运算符。<br>因为之前学习博弈论的时候就用到了一个关于异或的神奇性质</p>
+<p>对于一个局面，当且仅当A[1] xor A[2] xor … xor A[N] = 0时，该局面为P局面(即先手必败)。</p>
+<p>对于这个结论的证明如下：</p>
+<ol>
+<li>全0状态为P局面，即A[i]=0，则A[1] xor A[2] xor … xor A[N] = 0。</li>
+<li>从任意一个A[1] xor A[2] xor … xor A[N] = k != 0的状态可以移动到A[1] xor A[2] xor … xor A[N] = 0的状态。由于xor计算的特殊性，我们知道一定有一个A[i]最高位与k最高位的1是相同的，那么必然有A[i] xor k &lt; A[i]的，所以我们可以通过改变A[i]的值为A[i]’，使得A[1] xor A[2] xor … xor A[i]’ xor … xor A[N] = 0。</li>
+<li>对于任意一个局面，若A[1] xor A[2] xor … xor A[N] = 0，则不存在任何一个移动可以使得新的局面A[1] xor A[2] xor … xor A[N] = 0。由于xor计算的特殊性，我们可以知道，一定是存在偶数个1时该位置的1才会被消除。若只改变一个A[i]，无论如何都会使得1的数量发生变化，从而导致A[1] xor A[2] xor … xor A[N] != 0。<br>以上三条满足ICG游戏中N,P局面的转移性质，所以该结论的正确性也得到了证明。</li>
+</ol>
+<p>任何数异或0的结果是本身，异或相同的数是零，所以可以用依次异或来找到数列中独一无二的数。</p>
+<p>#代码<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stack&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;set&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;math.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> INF = <span class="number">0x3f3f3f3f</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">double</span> eps = <span class="number">1e-4</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//freopen("H:\\in.txt","r",stdin);</span></span><br><span class="line">    <span class="comment">//freopen("H:\\out.txt","w",stdout);</span></span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="keyword">while</span> (<span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;n) &amp;&amp; n)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (n--)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">int</span> temp;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;temp);</span><br><span class="line">            ans ^= temp;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%d\n"</span>, ans);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/资料/">资料</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+
+<SCRIPT language=javascript>
+function search(formname) {
+    formname.method = "get";
+    formname.action = "http://www.google.com/google";
+    document.search_form.word.value = document.search_form.word.value + " site:wintefell30";
+    return true;
+}
+</SCRIPT>
+
+<div class="search">
+    <form name="search_form" target="_blank" onsubmit="search(this)">
+        <input type="search" name="word" results="0" placeholder="搜索" onblur="this.value=''">
+        <!-- <input type="submit" value="搜索"> -->
+    </form>
+</div>
+
+  <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=280 height=450 src="//music.163.com/outchain/player?type=0&id=118612228&auto=0&height=430"></iframe>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/C/">C++</a><small>11</small></li>
+  
+    <li><a href="/tags/Haskell/">Haskell</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux/">Linux</a><small>2</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>2</small></li>
+  
+    <li><a href="/tags/备忘/">备忘</a><small>1</small></li>
+  
+    <li><a href="/tags/杂记/">杂记</a><small>3</small></li>
+  
+    <li><a href="/tags/模板/">模板</a><small>1</small></li>
+  
+    <li><a href="/tags/系统/">系统</a><small>2</small></li>
+  
+    <li><a href="/tags/网络/">网络</a><small>4</small></li>
+  
+    <li><a href="/tags/资料/">资料</a><small>3</small></li>
+  
+    <li><a href="/tags/题解/">题解</a><small>6</small></li>
+  
+  </ul>
+</div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+    <ul class="entry">
+        
+          <li>
+            <a href="http://blog.bipedalbit.net/">Bipedalbit</a>
+          </li>
+        
+          <li>
+            <a href="http://ibrother.me">iBrother</a>
+          </li>
+        
+          <li>
+            <a href="http://midgar.moe/">Midgar</a>
+          </li>
+        
+          <li>
+            <a href="http://arcphase20.com/">phase</a>
+          </li>
+        
+          <li>
+            <a href="http://mycodebattle.com">PureFrog</a>
+          </li>
+        
+          <li>
+            <a href="http://www.cnblogs.com/qscqesze/">qscqesze</a>
+          </li>
+        
+          <li>
+            <a href="http://scalpel.vip/">Scalpel</a>
+          </li>
+        
+          <li>
+            <a href="http://www.sevenskey.xyz/365/index.html">Sevenskey</a>
+          </li>
+        
+          <li>
+            <a href="http://shield-sky.github.io/">Shield-sky</a>
+          </li>
+        
+          <li>
+            <a href="http://syhdaily.com/">Syhsyh9696</a>
+          </li>
+        
+          <li>
+            <a href="http://vvwall.com/">vvwall</a>
+          </li>
+        
+    </div>
+  </div>
+
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Winterfell30
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'winterfell30';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>

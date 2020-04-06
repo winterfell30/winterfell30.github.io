@@ -1,0 +1,271 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>一些简单的Shell练习题 | winterfell30</title>
+  <meta name="author" content="Winterfell30">
+  
+  <meta name="description" content="Always Challenge Miracle">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="一些简单的Shell练习题">
+  <meta property="og:site_name" content="winterfell30">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="winterfell30" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+</html>
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">winterfell30</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about/index.html">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-20T15:38:18.000Z"><a href="/2016/12/20/shellpractice/">2016-12-20</a></time>
+      
+      
+  
+    <h1 class="title">一些简单的Shell练习题</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>RT<br><a id="more"></a><br>1、用sed修改test.txt的23行test为tset<br>直接搞<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i '23s/<span class="keyword">test</span>/<span class="keyword">tset</span>/<span class="keyword">g</span>' <span class="keyword">test</span>.txt</span><br></pre></td></tr></table></figure></p>
+<p>2、查看/web.log第25行第三列的内容。<br>用-F把分隔符改成空，这样就能得到第3个字符了<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">awk</span> -F <span class="string">""</span> <span class="string">'NR==25&#123;print <span class="variable">$3</span>&#125;'</span> /web.log</span><br></pre></td></tr></table></figure></p>
+<p>3、删除每个临时文件的最初三行。<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">sed</span> -i <span class="string">'1, 3d'</span> <span class="regexp">*.tmp</span></span><br></pre></td></tr></table></figure></p>
+<p>4、脚本编程：求100内的质数。<br>把文件中的内容存到clipboard:<br><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat filename <span class="string">| xclip -selection clipboard</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment">#calculate all prime numbers between 1 and 100</span></span><br><span class="line"></span><br><span class="line">i=2</span><br><span class="line"><span class="keyword">while</span> [ <span class="variable">$i</span> -le 100 ]; <span class="keyword">do</span></span><br><span class="line">     flag=1</span><br><span class="line">     <span class="keyword">for</span> (( j=2;j&lt;<span class="variable">$i</span>;j++ )); <span class="keyword">do</span></span><br><span class="line">         <span class="keyword">if</span> [ $(( <span class="variable">$i</span> % <span class="variable">$j</span> )) -eq 0 ]; <span class="keyword">then</span></span><br><span class="line">             flag=0</span><br><span class="line">             <span class="built_in">break</span></span><br><span class="line">         <span class="keyword">fi</span></span><br><span class="line">     <span class="keyword">done</span></span><br><span class="line">     <span class="keyword">if</span> [ <span class="variable">$flag</span> -eq 1 ]; <span class="keyword">then</span></span><br><span class="line">         <span class="built_in">echo</span> -ne <span class="string">"<span class="variable">$i</span>\n"</span></span><br><span class="line">     <span class="keyword">fi</span></span><br><span class="line">     i=$(( i + 1 ))</span><br><span class="line"> <span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<p>5、晚上11点到早上8点之间每两个小时查看一次系统日期与时间，写出具体配置命令<br>crontab使用计划表<br>*　　*　　*　　*　　*　　command<br>分　时 日　月　周 命令<br>不设置的可以直接用*表示，||用逗号表示<br><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">crontab -e</span><br><span class="line"><span class="number">0</span> <span class="number">23</span>,<span class="number">1</span><span class="number">-8</span>/<span class="number">2</span> * * * /bin/date &gt;&gt; /etc/time.log</span><br></pre></td></tr></table></figure></p>
+<p>6、编写个shell脚本将当前目录下大于10K的文件转移到/tmp目录下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment">#remove all files which bigger than 10kb from current dir to current/tmp</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> `ls -l | awk <span class="string">'&#123;if($5&gt;10240)&#123;print $9&#125;&#125;'</span>`</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    mv <span class="variable">$i</span> /tmp</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure></p>
+<p>7、在shell环境如何杀死一个进程？<br><figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">kill</span> -<span class="keyword">s</span> <span class="number">9</span> <span class="string">`pgrep processname</span></span><br><span class="line"><span class="string">`</span></span><br></pre></td></tr></table></figure></p>
+<p>将file.txt的制表符，即tab，全部替换成”|”<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i <span class="string">"s/\t/\|/g"</span> <span class="built_in">file</span>.txt</span><br></pre></td></tr></table></figure></p>
+<p>8、把当前目录（包含子目录）下所有后缀为“.sh”的文件后缀变更为“.shell”<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment">#replace .sh to .shell</span></span><br><span class="line">str=`find ./ -name \*.sh`</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="variable">$str</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    mv <span class="variable">$i</span> <span class="variable">$&#123;i%sh&#125;</span>shell</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure></p>
+<p>9、假设有一个脚本scan.sh，里面有1000行代码，并在vim模式下面，请按照如下要求写入对应的指令<br>1）将shutdown字符串全部替换成reboot<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">:%s/shutdown/reboot/g</span></span><br></pre></td></tr></table></figure></p>
+<p>2）清空所有字符<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">:%d</span></span><br></pre></td></tr></table></figure></p>
+<p>3）不保存退出<br><figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">:q!</span></span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Linux/">Linux</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+
+<SCRIPT language=javascript>
+function search(formname) {
+    formname.method = "get";
+    formname.action = "http://www.google.com/google";
+    document.search_form.word.value = document.search_form.word.value + " site:wintefell30";
+    return true;
+}
+</SCRIPT>
+
+<div class="search">
+    <form name="search_form" target="_blank" onsubmit="search(this)">
+        <input type="search" name="word" results="0" placeholder="搜索" onblur="this.value=''">
+        <!-- <input type="submit" value="搜索"> -->
+    </form>
+</div>
+
+  <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=280 height=450 src="//music.163.com/outchain/player?type=0&id=118612228&auto=0&height=430"></iframe>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/C/">C++</a><small>11</small></li>
+  
+    <li><a href="/tags/Haskell/">Haskell</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux/">Linux</a><small>2</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>2</small></li>
+  
+    <li><a href="/tags/备忘/">备忘</a><small>1</small></li>
+  
+    <li><a href="/tags/杂记/">杂记</a><small>3</small></li>
+  
+    <li><a href="/tags/模板/">模板</a><small>1</small></li>
+  
+    <li><a href="/tags/系统/">系统</a><small>2</small></li>
+  
+    <li><a href="/tags/网络/">网络</a><small>4</small></li>
+  
+    <li><a href="/tags/资料/">资料</a><small>3</small></li>
+  
+    <li><a href="/tags/题解/">题解</a><small>6</small></li>
+  
+  </ul>
+</div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+    <ul class="entry">
+        
+          <li>
+            <a href="http://blog.bipedalbit.net/">Bipedalbit</a>
+          </li>
+        
+          <li>
+            <a href="http://ibrother.me">iBrother</a>
+          </li>
+        
+          <li>
+            <a href="http://midgar.moe/">Midgar</a>
+          </li>
+        
+          <li>
+            <a href="http://arcphase20.com/">phase</a>
+          </li>
+        
+          <li>
+            <a href="http://mycodebattle.com">PureFrog</a>
+          </li>
+        
+          <li>
+            <a href="http://www.cnblogs.com/qscqesze/">qscqesze</a>
+          </li>
+        
+          <li>
+            <a href="http://scalpel.vip/">Scalpel</a>
+          </li>
+        
+          <li>
+            <a href="http://www.sevenskey.xyz/365/index.html">Sevenskey</a>
+          </li>
+        
+          <li>
+            <a href="http://shield-sky.github.io/">Shield-sky</a>
+          </li>
+        
+          <li>
+            <a href="http://syhdaily.com/">Syhsyh9696</a>
+          </li>
+        
+          <li>
+            <a href="http://vvwall.com/">vvwall</a>
+          </li>
+        
+    </div>
+  </div>
+
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Winterfell30
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'winterfell30';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>

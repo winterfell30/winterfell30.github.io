@@ -1,0 +1,292 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>《Effective C++》摘要备忘（二）构造/析构/赋值 | winterfell30</title>
+  <meta name="author" content="Winterfell30">
+  
+  <meta name="description" content="Always Challenge Miracle">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="《Effective C++》摘要备忘（二）构造/析构/赋值">
+  <meta property="og:site_name" content="winterfell30">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="winterfell30" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+</html>
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">winterfell30</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about/index.html">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-11-12T15:43:43.000Z"><a href="/2015/11/12/Effective-C-2/">2015-11-12</a></time>
+      
+      
+  
+    <h1 class="title">《Effective C++》摘要备忘（二）构造/析构/赋值</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>RT<br><a id="more"></a></p>
+<p>####Item5.了解C++默默编写并调用哪些函数<br>编译器可以暗自为class创建default构造函数、copy构造函数、copy assignment操作符，以及析构函数。<br>当class的数据类型为reference或者const或者base class里面是private的时候，如果没有手动定义copy assignment且给他们进行了赋值行为，编译器将无视赋值的那行不进行编译。</p>
+<p>####Item6.若不想使用编译器自动生成的函数，就该明确拒绝<br>接着上面的item5来说，当执行一些不该进行拷贝赋值的行为的时候，因为C++会自动给class添加copy assignment，所以本不应该被允许的还是被允许了。<br>由上面知道把复制构造函数和赋值函数声明为private可以阻止调用，但是还是很不安全，因为friend和member函数还是可以调用。<br>所以我们可以“将成员函数生命为private并且故意不实现他们”，这样如果有人调用的时候会获得一个连接错误。<br>这个技巧被大家接受，标准程序库实现码中的ios_base，basic_ios和sentry，copy函数和copy assignment操作符都被声明为private并且没有定义， 这个技巧实现起来也很简单。<br><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="symbol">HomeForSale</span> </span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	...</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	...</span><br><span class="line">	HomeForSale(<span class="keyword">const</span> HomeForSale&amp;);    <span class="comment">//只有声明没有实现</span></span><br><span class="line">	HomeForSale&amp; operator=(<span class="keyword">const</span> HomeForSale&amp;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>至于参数为空，既然没有实现，指定了也没有用，空着也是可以的。</p>
+<p>上面提到当被调用的时候显示的连接错误，把错误从连接器转到编译器也是可能的（而且更早的侦测到错误是好事）。<br>只需将copy构造函数和copy assignment操作符声明为private，但是不是在HomeForSale自身，而是在一个专门为了阻止copying动作而设计的base class内，这个class非常简单：<br><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="symbol">Uncopyable</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">protected</span>:                           <span class="comment">//允许derived对象构造和析构</span></span><br><span class="line">	Uncopyable() &#123;&#125;</span><br><span class="line">	~Uncopyable() &#123;&#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	Uncopyable(<span class="keyword">const</span> Uncopyable&amp;);  <span class="comment">//但阻止copying</span></span><br><span class="line">	Uncopyable&amp; operator=(<span class="keyword">const</span> Uncopyable&amp;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>为了阻止HomeForSale对象被拷贝，我们只需要让其继承Uncopyable:<br><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="symbol">HomeForSale: <span class="symbol">private</span></span> <span class="symbol">Uncopyable</span> </span><br><span class="line">&#123;</span><br><span class="line">	...                             <span class="comment">//不要再声明copy函数和操作符</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>Boost库里面有个class名为uncopyable，就可以实现上面的功能。</p>
+<p>####Item7.为多态基类声明virtual析构函数<br>在使用Factory函数的的时候直接用一个指针指向对象，为了遵守factory函数的规矩，为了避免泄漏和其他资源，将factory函数返回的每一个对象适当的delete掉是很重要的。<br>问题是指针是derived class对象，但是销毁是通过base class指针，而目前的base class有个non-virtual析构函数，所以结果就是base class被销毁，derived class却没有被销毁。这种局部销毁会形成资源泄漏等很多问题。<br>解决方案是给base class一个virtual析构函数，之后删除derived class对象就会得到想要的结果，销毁整个对象。<br>如果没想让这个类作为base class，就不要令其析构函数为virtual。无端的把析构函数声明为virtual，就像从未声明他们为virtual一样，都是错误的（原因是些计算机体系结构的东西，不再展开），许多人的心得就是：只有当class内含至少一个virtual函数时，才将它声明为virtual析构函数。<br>综上，给base class一个virtual析构函数，这个规则只适用于带多态性质的base class身上。这种设计的目的是为了用来通过base class接口处理derived class对象。但是并非所有base class的设计目的都是为了多态，他们不需要virtual析构函数。</p>
+<p>####Item8.别让异常逃离析构函数<br>尽量不要让析构函数吐出(emit)异常，比如以下代码：<br><figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class <span class="type">Widght</span> </span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	...</span><br><span class="line">	~<span class="type">Widght</span>() <span class="meta">&#123;...&#125;</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">void</span> doSomething()</span><br><span class="line">&#123;</span><br><span class="line">	std::vector&lt;<span class="type">Widght</span>&gt; v;</span><br><span class="line">	...                  //v在这里被销毁</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当vector被销毁时，它有责任销毁销毁所有Widght。假设v中有10个Widght，析构第一个元素期间，有个异常被抛出，，其他的Widght还是应该被销毁（否则会发生泄漏），因此应该每一个Widght调用一下析构函数，然后还会抛出一个异常，这对于C++来说太多了。<br>在两个异常同时存在的情况下，程序若不是结束执行就是导致不明确行为，上例中即属于不明确行为。同理在其他的容器中也会出现相同情况，简而言之，在C++中不要让析构函数吐出异常。<br>如果析构函数必须执行一个动作，而该动作可能会抛出异常，该怎么办？假设用一个class负责数据库连接：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DBConnection</span> </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	...</span><br><span class="line">	<span class="function"><span class="keyword">static</span> DBConnection <span class="title">create</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">close</span><span class="params">()</span></span>;                <span class="comment">//关闭联机：失败则抛出异常</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>为了确保客户不忘记调用close()，一个合理的想法是创建一个管理DBConnection资源的class,用其析构函数调用close()。<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">class</span> <span class="selector-tag">DBConn</span> </span><br><span class="line">&#123;</span><br><span class="line"><span class="attribute">public</span>:</span><br><span class="line">	...</span><br><span class="line">	~<span class="built_in">DBConn</span>()                    //确保数据库关闭</span><br><span class="line">	&#123;</span><br><span class="line">		db.<span class="built_in">close</span>();</span><br><span class="line">	&#125;</span><br><span class="line"><span class="selector-tag">private</span>:</span><br><span class="line">	<span class="selector-tag">DBConnection</span> <span class="selector-tag">db</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>用户需要这样写：<br><figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	DBConn dbc(DBConnection<span class="type">::create</span>);  <span class="comment">//建立一个对象并且交给DBConn对象管理</span></span><br><span class="line">	<span class="params">...</span>                                <span class="comment">//DBConn被销毁，自动调用close</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>close()调用成功的话，一切都很好，但是如果调用异常，DBConn会传播异常，也就是允许它离开析构函数。那会造成很大的麻烦。<br>两个办法可以解决这个问题：<br>1.如果close抛出异常就结束程序。通常通过调用abort来完成<br><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">DBConn::~DBConn()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">try</span> &#123; db.<span class="built_in">close</span>(); &#125;</span><br><span class="line">	<span class="keyword">catch</span> (...) </span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">//制作运转记录，记录异常</span></span><br><span class="line">		<span class="built_in">std</span>::<span class="built_in">abort</span>();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果程序遭遇析构时的异常就无法执行，强迫结束是个合理选择，abort可以制“不明确行为”于死地，阻止异常被传播出去。<br>2.吞下因调用close而发生的异常<br><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">DBConn::~DBConn()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">try</span> &#123; db.<span class="built_in">close</span>(); &#125;</span><br><span class="line">	<span class="keyword">catch</span> (...) </span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">//制作运转记录，记录异常</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>一般而言，吞下异常是个坏主意，，因为他忽略了某些重要信息。但是有时候吞下也比“草率结束程序”或者“不明确行为带来的奉献”好。<br>这种情况适用于程序可以继续可靠地执行，即使在忽略了一个错误之后。</p>
+<p>这两种方法都没有什么吸引力。都无法对“close抛出异常”做出反应。<br>一个较佳策略是重新设计DBConn接口，使用户有机会对可能出现的问题做出反应。例如本身提供一个close函数，富裕客户一个机会处理“有可能发生的异常”。DBConn也可以追踪并且管理，如果析构函数调用close我们还是用上面两种方法。<br><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DBConn</span> </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	...</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">close</span><span class="params">()</span>             <span class="comment">//供用户使用</span></span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		db.<span class="built_in">close</span>();</span><br><span class="line">		<span class="built_in">close</span> = <span class="literal">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	~DBConn()                    </span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (!closed)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">try</span>              <span class="comment">//如果用户没关闭，则自动关闭连接</span></span><br><span class="line">			&#123;</span><br><span class="line">				db.<span class="built_in">close</span>();</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">catch</span></span><br><span class="line">			&#123;</span><br><span class="line">				<span class="comment">//制作运转记录，记录异常</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	DBConnection db;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样把调用close的责任交给客户，这并不是推卸责任，如果某个操作会在失败时抛出异常，而又存在某种需要必须处理的异常，那么这个异常必须来自析构函数外的某个函数。客户自己调用close并不会有负担，这给了他们一个处理错误的机会。如果他们自信不会有异常，就可以忽略它，通过析构函数自动调用close()。</p>
+<p>总结一下。<br>不要让析构函数吐出异常，如果有可能抛出异常，应该及时捕捉，结束程序或者吞下他们。<br>如果客户需要某个操作对异常做出反应，class应该提供一个普通函数执行操作。</p>
+<p>####Item9.绝不在构造或者析构函数中调用virtual函数<br>绝不在构造或者析构函数中调用virtual函数，这样不会得到预想中的结果。<br>假设有这样一个类，用来记录交易的买进卖出的订单，每交易一次就要在审计日志中创建一个日志记录：<br><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="symbol">Transaction</span>               //<span class="symbol">Base</span> <span class="symbol">class</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	Transaction();</span><br><span class="line">	virtual <span class="built_in">void</span> logTransction() <span class="keyword">const</span> = <span class="number">0</span>;    <span class="comment">//做出一个因类型不同而不同的记录</span></span><br><span class="line">	...</span><br><span class="line">&#125;;</span><br><span class="line">Transaction::Transaction()   </span><br><span class="line">&#123;</span><br><span class="line">	...</span><br><span class="line">	logTransaction();                          <span class="comment">//构造函数的最后动作是记录这笔交易</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="symbol">BuyTransaction: <span class="symbol">public</span></span> <span class="symbol">Transaction</span>       //<span class="symbol">derived</span> <span class="symbol">class</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	virtual <span class="built_in">void</span> logTransction() <span class="keyword">const</span> = <span class="number">0</span>;    <span class="comment">//记录这笔交易</span></span><br><span class="line">	...</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="symbol">SellTransaction: <span class="symbol">public</span></span> <span class="symbol">Transaction</span>      //<span class="symbol">derived</span> <span class="symbol">class</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	virtual <span class="built_in">void</span> logTransction() <span class="keyword">const</span> = <span class="number">0</span>;    <span class="comment">//记录这笔交易</span></span><br><span class="line">	...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>现在执行 :<br><figure class="highlight plain"><figcaption><span>b```</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">无疑会有一个BuyTransaction构造函数被调用，但首先Transaction构造函数会更早被调用。</span><br><span class="line">所以问题就出现了，最先产生的logTransction()版本是base class的。</span><br><span class="line">是的，base class构造期间virtual函数不会下降到derived classes阶层。用比较非正式的话来说,在base class构造期间，virtual函数不是virtual函数。</span><br><span class="line">其实更加本质的原因就是在derived class对象的Base class构造期间，对象的类型是base的，不只是virtual会被解析至base class，若使用运行期类型信息（runtime type information,例如dynamic_cast(条款27)和typeid）也会把对象视为base类型。</span><br><span class="line">而且这样也是最合理的因为derived class函数执行之前还不是一个derived class，编译器最好的处理方式就是视他为不存在的。</span><br><span class="line">当base class有多个构造函数时，每个都要执行相同的动作，最优秀的方法就是把共同的代码放到一个初始化函数(init)中：</span><br></pre></td></tr></table></figure></p>
+<p>class Transaction               //Base class<br>{<br>public:<br>    Transaction();<br>    { init(); }                                //调用non-virtual<br>    virtual void logTransction() const = 0;    //做出一个因类型不同而不同的记录<br>    …<br>private:<br>    void init()<br>    {<br>        …<br>        logTransction();                      //调用virtual<br>    }<br>};<br>但是这样依旧没能解决上面的问题，而且更加麻烦，因为他不会引起编译器或者连接器的抱怨，程序会正常运行，只留下你百思不解为什么建立的是一个Transaction的记录。<br>唯一能够避免的方法只有一个，确定构造函数和析构函数都没有调用virtual函数，并且他们调用的函数也没有调用。<br>这样就必须把logTransction()改成non-virtual的了，，单后要求derived class构造函数传递必要信息给Transaction构造函数，然后安全的调用non-virtual的logTransaction。<br><figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> Transaction</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	explicit <span class="constructor">Transaction(<span class="params">const</span> <span class="params">std</span>::<span class="params">string</span>&amp; <span class="params">logInfo</span>)</span>;</span><br><span class="line">	<span class="keyword">virtual</span> void log<span class="constructor">Transction(<span class="params">const</span> <span class="params">std</span>::<span class="params">string</span>&amp; <span class="params">logInfo</span>)</span> const = <span class="number">0</span>;      <span class="comment">//如今是个non-virtual函数</span></span><br><span class="line">	...</span><br><span class="line">&#125;;</span><br><span class="line">Transaction::<span class="constructor">Transaction(<span class="params">const</span> <span class="params">std</span>::<span class="params">string</span>&amp; <span class="params">logInfo</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	...</span><br><span class="line">	log<span class="constructor">Transaction(<span class="params">logInfo</span>)</span>;                                               <span class="comment">//如今是个non-virtual调用</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> BuyTransaction: public Transaction </span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">	<span class="constructor">BuyTransaction(<span class="params">parameter</span>)</span></span><br><span class="line">		: <span class="constructor">Transaction(<span class="params">createLogString</span>(<span class="params">parameter</span>)</span>)                          <span class="comment">//将log信息传给base class构造函数</span></span><br><span class="line">	&#123;<span class="operator"> ... </span>&#125;</span><br><span class="line">	...</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	static std::<span class="built_in">string</span> create<span class="constructor">LogString(<span class="params">parameters</span>)</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>注意本例中的createLogString函数。比起在成员初始列内金鱼base class数据，利用辅助函数往往更加方便（也更可读）。令其为static，也就不可能意外指向“初期未成熟的BuyTransaction对象内尚未初始化的成员变量“。这很重要，因为我们最开始的问题(base构造期间无法将virtual下降到derived)就是因为有些成员变量处于未定义状态。</p>
+<p>####Item10.令operator=返回一个reference to *this<br>为了实现连锁赋值（a = b = c = 0)，赋值操作符必须返回一个reference指向操作符的左侧实参,这是为class实现操作符时要遵守的协议。<br>这个协议不仅适用于等号，+=等各种复制相关运算也适用。<br>不过这只是个协议没有强制性，即使不遵守也不影响编译。但是这份协议被所有内置类型和标准库所遵守，除非有别的好的理由，不然还是标准化一些吧。</p>
+<p>####Item11.在operator=中处理自我赋值<br>也许猛然看起来没有什么必要处理自我赋值，毕竟没有人会写“a = a”这种代码。<br>事实上我们写程序时经常不经意的进行自我赋值，主要有以下两种情况：<br><figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">a</span>[i] = <span class="keyword">a</span>[j] <span class="comment"> //潜在的自我赋值(i和j相等时)</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">*px</span> = *py    <span class="comment">//潜在的自我赋值(px和py恰巧指向同一个位置时)</span></span><br></pre></td></tr></table></figure>
+<p>如果遵循item13和item14的忠告，你会使用对象来管理资源，这种情况下不用额外操心自我赋值，然而如果你尝试手动管理资源(比如写一个管理资源的class)，就有可能掉入陷阱，假设建立了一个class用来保存一个指针指向一个动态分配的位图(bitmap)：<br><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="symbol">Bitmap</span> &#123; ... &#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="symbol">Widght</span> </span><br><span class="line">&#123;</span><br><span class="line">	...</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	Bitmap* pd;           <span class="comment">//指针指向一个heap分配得到的对象</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>下面是一个看起来合理但是并不安全的operator=代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Widght::<span class="keyword">operator</span>=(<span class="keyword">const</span> Widght&amp; rhs)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">delete</span> pb;                   <span class="comment">//停止使用当前的bitmap</span></span><br><span class="line">	pb = <span class="keyword">new</span> Bitmap(*rhs.pb);    <span class="comment">//使用rhs's bitmap的复件</span></span><br><span class="line">	<span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果函数内的*this和rhs是同一个对象的话，delete就同时销毁了复件，最后指针指向了一个已经被删除的对象。<br>传统解决方案是使用一个证同测试：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Widght::<span class="keyword">operator</span>=(<span class="keyword">const</span> Widght&amp; rhs)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">this</span> == &amp;rhs) <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">	delete pb;                   <span class="comment">//停止使用当前的bitmap</span></span><br><span class="line">	pb = new Bitmap(*rhs.pb);    <span class="comment">//使用rhs's bitmap的复件</span></span><br><span class="line">	<span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>前面提到了,如果这里出现了异常（内存不足或者copy构造函数异常），Widght会指向被删除的Bitmap。这会引起很多麻烦。<br>不过在这里，让operator=具备异常安全性往往会带来自我赋值安全性的回报。所以我们只要专心实现异常安全性就行了。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Widght::<span class="keyword">operator</span>=(<span class="keyword">const</span> Widght&amp; rhs)</span><br><span class="line">&#123;</span><br><span class="line">	Bitmap *pOrig = pb;          <span class="comment">//记住原来的pb</span></span><br><span class="line">	pb = <span class="keyword">new</span> Bitmap(*rhs.pb);    <span class="comment">//令pb指向*pb的一个复件</span></span><br><span class="line">	<span class="keyword">delete</span> pOrig;                <span class="comment">//删除原先的pb</span></span><br><span class="line">	<span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样如果new抛出异常，pb保持原状，不过牺牲了一点效率。如果很关心效率，可以把前面用到的证同测试再放到前面，不过实际上“自我赋值”发生的频率非常低。<br>像上面那样手动排列语句的一个代替方案是，使用”copy and swap”技术，这个技术和异常安全性有密切关系，会在item29详细指出。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	...</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(Widget&amp; rhs)</span></span>;      <span class="comment">//交换*this和rhs的数据</span></span><br><span class="line">	...</span><br><span class="line">&#125;;</span><br><span class="line">Widght::<span class="keyword">operator</span>=(<span class="keyword">const</span> Widght&amp; rhs)</span><br><span class="line">&#123;</span><br><span class="line">	Widget temp(rhs);            <span class="comment">//为rhs做一个副本</span></span><br><span class="line">	swap(temp);                  <span class="comment">//将*this数据和上述复件的数据交换</span></span><br><span class="line">	<span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>因为直接以值为参数传递会产生副本，所以也可以直接简写为：<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Widght::<span class="keyword">operator</span>=(Widght rhs)    <span class="comment">//重点是这里的传递,rhs是个副本</span></span><br><span class="line">&#123;</span><br><span class="line">	swap(rhs);                  <span class="comment">//将*this数据和上述复件的数据交换</span></span><br><span class="line">	<span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>####Item12.复制对象时勿忘其每一个成分<br>当你声明自己的copy函数时，意思就是告诉编译器你并不喜欢缺省实现中的某些行为，编译器就像被冒犯了一样，会以一种奇怪的方式回敬，当你出错的时候他不会给你提醒。。。<br>加入有一个类，本来是完美无缺的，后来加入了一个新的成员变量，但是copying函数执行的是局部拷贝，也就是当你加入一个成员变量，必须要同时修改copy函数以及各种形式的operator=(这个容易忘)。如果你忘记了，编译器不太可能提醒你。<br>有时候即使看起来已经在copy函数加入了新加入的变量，也可能会出现问题，比如修改了derived class的copy函数之后，他们可以复制所有的derived class的成员变量，但是base class的一些就被忽略了。<br>所以我们在修改copy函数时要修改base class的，但是因为有些数据是private的，所以我们要调用base class的copy函数。<br>因为两个copying函数有着近乎相同的实现本体，，这可能会诱使你直接用一个copy函数调用另一个。但是实际上这样是很荒谬的。。。构造一个已经存在的对象有什么意义呢。如果发现copy构造函数和copy assignment有着相近的代码，消除重复的代码的做法是建立一个函数(init)给他们共同调用，这个策略可以防止代码无谓的重复。<br>总而言之，要确保copy函数包含了所有成员变量，尤其是base class中的。不要尝试用某个copying函数调用另一个copying函数，应该把共同机能放到第三个函数中，有他们共同调用。</p>
+<p>以上为条款5-12（第二章）的摘要和一些需要注意的地方，本章内容较多，如果有不正确或者模糊的地方欢迎指正。</p>
+<p><del>要挖坑了</del>。。。暂时不会再更新了。。。没什么开发经验现在看这个水平还是差些。。。以后再看的时候会填上的。。。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/C/">C++</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+
+<SCRIPT language=javascript>
+function search(formname) {
+    formname.method = "get";
+    formname.action = "http://www.google.com/google";
+    document.search_form.word.value = document.search_form.word.value + " site:wintefell30";
+    return true;
+}
+</SCRIPT>
+
+<div class="search">
+    <form name="search_form" target="_blank" onsubmit="search(this)">
+        <input type="search" name="word" results="0" placeholder="搜索" onblur="this.value=''">
+        <!-- <input type="submit" value="搜索"> -->
+    </form>
+</div>
+
+  <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=280 height=450 src="//music.163.com/outchain/player?type=0&id=118612228&auto=0&height=430"></iframe>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/C/">C++</a><small>11</small></li>
+  
+    <li><a href="/tags/Haskell/">Haskell</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux/">Linux</a><small>2</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>2</small></li>
+  
+    <li><a href="/tags/备忘/">备忘</a><small>1</small></li>
+  
+    <li><a href="/tags/杂记/">杂记</a><small>3</small></li>
+  
+    <li><a href="/tags/模板/">模板</a><small>1</small></li>
+  
+    <li><a href="/tags/系统/">系统</a><small>2</small></li>
+  
+    <li><a href="/tags/网络/">网络</a><small>4</small></li>
+  
+    <li><a href="/tags/资料/">资料</a><small>3</small></li>
+  
+    <li><a href="/tags/题解/">题解</a><small>6</small></li>
+  
+  </ul>
+</div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+    <ul class="entry">
+        
+          <li>
+            <a href="http://blog.bipedalbit.net/">Bipedalbit</a>
+          </li>
+        
+          <li>
+            <a href="http://ibrother.me">iBrother</a>
+          </li>
+        
+          <li>
+            <a href="http://midgar.moe/">Midgar</a>
+          </li>
+        
+          <li>
+            <a href="http://arcphase20.com/">phase</a>
+          </li>
+        
+          <li>
+            <a href="http://mycodebattle.com">PureFrog</a>
+          </li>
+        
+          <li>
+            <a href="http://www.cnblogs.com/qscqesze/">qscqesze</a>
+          </li>
+        
+          <li>
+            <a href="http://scalpel.vip/">Scalpel</a>
+          </li>
+        
+          <li>
+            <a href="http://www.sevenskey.xyz/365/index.html">Sevenskey</a>
+          </li>
+        
+          <li>
+            <a href="http://shield-sky.github.io/">Shield-sky</a>
+          </li>
+        
+          <li>
+            <a href="http://syhdaily.com/">Syhsyh9696</a>
+          </li>
+        
+          <li>
+            <a href="http://vvwall.com/">vvwall</a>
+          </li>
+        
+    </div>
+  </div>
+
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Winterfell30
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'winterfell30';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>

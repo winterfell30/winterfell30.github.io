@@ -1,0 +1,273 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>一本满足的线段树专题 | winterfell30</title>
+  <meta name="author" content="Winterfell30">
+  
+  <meta name="description" content="Always Challenge Miracle">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="一本满足的线段树专题">
+  <meta property="og:site_name" content="winterfell30">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="winterfell30" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+</html>
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">winterfell30</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about/index.html">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-12-13T13:34:06.000Z"><a href="/2015/12/13/segtree-hh/">2015-12-13</a></time>
+      
+      
+  
+    <h1 class="title">一本满足的线段树专题</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>RT<br><a id="more"></a></p>
+<p>因为连着两场比赛坑了线段树，所以我打算好好补一下线段树，我线段树的代码风格一直是学习HH神犇的，感觉很简洁，飘逸。<br>以下题目有些是HH神犇的专题里面的，有些是我在VJ上找的，自我感觉都是些还不错的题目。<br>因为以前写专题总是一次做完再写要写很久。。。所以这次边做边更。。。</p>
+<p>###1.单点更新<br>线段树的单点更新比较简单，比赛中大都是用来配合其他类型题目来使用的（比如DP）。<br>所以虽然题目都比较简单，但是熟练使用还是挺重要的。</p>
+<p>####HDOJ 1166 敌兵布阵<br>单点增减，区间求和。<br><a href="http://paste.ubuntu.com/13989936/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>####HDOJ 1754 I Hate It<br>单点修改，区间求最值。<br><a href="http://paste.ubuntu.com/13989951/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>####HDOJ 1394 Minimum Inversion Number<br>先用线段树求一下逆序数，然后把所有情况递推一下找到最大值就行了。<br>单点修改，区间求和。<br><a href="http://paste.ubuntu.com/13989991/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>####HDOJ 2795 Billboard<br>求区间最大值，然后减去L，可以直接在query里面update。<br>单点修改，区间查询。<br><a href="http://paste.ubuntu.com/13990061/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>####POJ 2352 Stars<br>以前用树状数组AC过，思路相同，线段树的区间从左到右为1~32000，一个一个插入。<br>单点修改，区间查询。<br><a href="http://paste.ubuntu.com/13990095/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>###2.区间更新<br>区间更新使用了懒惰标记，不更新到节点使得效率更高。<br>关于懒惰标记不再赘述，注意在线段树操作的时候总是要PushDown，只有update的时候才需要PushUp。<br>在query里面的PushDown是将父节点没有传递下去的部分传下去，这里不是更新，是之前懒惰标记的更正。<br>PushUp是将子节点传给父节点，子节点的值没有变化，所以不需要PushUp。</p>
+<p>####HDOJ 1698 Just a Hook<br>屠夫的钩子是铜的，可以把一段钩子变成金的或者银的，问最后总价值是多少。<br>区间替换，查询直接输出sum[root]就行了。<br><a href="http://paste.ubuntu.com/13990495/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>####POJ 3468 A Simple Problem with Integers<br>给出一些数，可以把一个区间里面的数都增加一个数，求给出区间的和。<br>区间增添，区间查询。<br><a href="http://paste.ubuntu.com/13990255/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>###3.扫描线<br>有时候会用到离散化。</p>
+<p>###HDU1542 Atlantis<br>求矩形的面积并，横轴建树按y轴扫描就行了，cnt数组记录下边比上边多的条数。<br><a href="http://paste.ubuntu.com/14239653/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>###HDU1828 Picture<br>求矩形的周长并，和面积不同的是横轴方向也要维护边的条数，而且要注意重叠的边。<br><a href="http://paste.ubuntu.com/14239656/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>未完待续</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/题解/">题解</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+
+<SCRIPT language=javascript>
+function search(formname) {
+    formname.method = "get";
+    formname.action = "http://www.google.com/google";
+    document.search_form.word.value = document.search_form.word.value + " site:wintefell30";
+    return true;
+}
+</SCRIPT>
+
+<div class="search">
+    <form name="search_form" target="_blank" onsubmit="search(this)">
+        <input type="search" name="word" results="0" placeholder="搜索" onblur="this.value=''">
+        <!-- <input type="submit" value="搜索"> -->
+    </form>
+</div>
+
+  <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=280 height=450 src="//music.163.com/outchain/player?type=0&id=118612228&auto=0&height=430"></iframe>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/C/">C++</a><small>11</small></li>
+  
+    <li><a href="/tags/Haskell/">Haskell</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux/">Linux</a><small>2</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>2</small></li>
+  
+    <li><a href="/tags/备忘/">备忘</a><small>1</small></li>
+  
+    <li><a href="/tags/杂记/">杂记</a><small>3</small></li>
+  
+    <li><a href="/tags/模板/">模板</a><small>1</small></li>
+  
+    <li><a href="/tags/系统/">系统</a><small>2</small></li>
+  
+    <li><a href="/tags/网络/">网络</a><small>4</small></li>
+  
+    <li><a href="/tags/资料/">资料</a><small>3</small></li>
+  
+    <li><a href="/tags/题解/">题解</a><small>6</small></li>
+  
+  </ul>
+</div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+    <ul class="entry">
+        
+          <li>
+            <a href="http://blog.bipedalbit.net/">Bipedalbit</a>
+          </li>
+        
+          <li>
+            <a href="http://ibrother.me">iBrother</a>
+          </li>
+        
+          <li>
+            <a href="http://midgar.moe/">Midgar</a>
+          </li>
+        
+          <li>
+            <a href="http://arcphase20.com/">phase</a>
+          </li>
+        
+          <li>
+            <a href="http://mycodebattle.com">PureFrog</a>
+          </li>
+        
+          <li>
+            <a href="http://www.cnblogs.com/qscqesze/">qscqesze</a>
+          </li>
+        
+          <li>
+            <a href="http://scalpel.vip/">Scalpel</a>
+          </li>
+        
+          <li>
+            <a href="http://www.sevenskey.xyz/365/index.html">Sevenskey</a>
+          </li>
+        
+          <li>
+            <a href="http://shield-sky.github.io/">Shield-sky</a>
+          </li>
+        
+          <li>
+            <a href="http://syhdaily.com/">Syhsyh9696</a>
+          </li>
+        
+          <li>
+            <a href="http://vvwall.com/">vvwall</a>
+          </li>
+        
+    </div>
+  </div>
+
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Winterfell30
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'winterfell30';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>

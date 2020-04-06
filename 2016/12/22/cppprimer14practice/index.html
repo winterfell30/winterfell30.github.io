@@ -1,0 +1,263 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>《C++ primer》chapter14 程序练习题 | winterfell30</title>
+  <meta name="author" content="Winterfell30">
+  
+  <meta name="description" content="Always Challenge Miracle">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="《C++ primer》chapter14 程序练习题">
+  <meta property="og:site_name" content="winterfell30">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="winterfell30" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+</html>
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">winterfell30</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about/index.html">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-12-22T14:48:25.000Z"><a href="/2016/12/22/cppprimer14practice/">2016-12-22</a></time>
+      
+      
+  
+    <h1 class="title">《C++ primer》chapter14 程序练习题</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>RT<br><a id="more"></a><br>第14章部分练习题答案，大都为后面一些的内容，有些练习题太重复就不写了<br>14.30<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StrBlobPtr</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    StrBlobPtr(): curr(<span class="number">0</span>) &#123;&#125;</span><br><span class="line">    StrBlobPtr(StrBlob &amp;a, <span class="keyword">size_t</span> sz = <span class="number">0</span>):</span><br><span class="line">        wptr(a.data), curr(sz) &#123;&#125;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span>&amp; <span class="keyword">operator</span>*() <span class="keyword">const</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">auto</span> p = check(curr, <span class="string">"dereference past end"</span>);</span><br><span class="line">        <span class="keyword">return</span> (*p)[curr];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span>* <span class="keyword">operator</span>-&gt;() <span class="keyword">const</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> &amp; <span class="keyword">this</span>-&gt;<span class="keyword">operator</span>*();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="built_in">std</span>::<span class="built_in">string</span> <span class="title">deref</span><span class="params">()</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">auto</span> p = check(curr, <span class="string">"dereference past end"</span>);</span><br><span class="line">        <span class="keyword">return</span> (*p)[curr];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">StrBlobPtr&amp; <span class="title">incr</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        check(curr, <span class="string">"increment past end of StrBlobPtr"</span>);</span><br><span class="line">        ++curr;</span><br><span class="line">        <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="built_in">std</span>::<span class="built_in">string</span>&gt;&gt;</span><br><span class="line">    check(<span class="built_in">std</span>::<span class="keyword">size_t</span> i, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;msg) <span class="keyword">const</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">auto</span> ret = wptr.lock();</span><br><span class="line">        <span class="keyword">if</span> (!ret)</span><br><span class="line">            <span class="keyword">throw</span> <span class="built_in">std</span>::runtime_error(<span class="string">"unbound StrBlobPtr"</span>);</span><br><span class="line">        <span class="keyword">if</span> (i &gt;= ret-&gt;<span class="built_in">size</span>())</span><br><span class="line">            <span class="keyword">throw</span> <span class="built_in">std</span>::out_of_range(msg);</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//保存一个weak_ptr,意味着底层vector可能会被销毁</span></span><br><span class="line">    <span class="built_in">std</span>::weak_ptr&lt;<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="built_in">std</span>::<span class="built_in">string</span>&gt;&gt; wptr;</span><br><span class="line">    <span class="built_in">std</span>::<span class="keyword">size_t</span> curr;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>14.35<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Input_String</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">std</span>::<span class="built_in">string</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="built_in">std</span>::istream&amp; in = <span class="built_in">std</span>::<span class="built_in">cin</span>)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">string</span> t;</span><br><span class="line">        getline(in, t);</span><br><span class="line">        <span class="keyword">if</span> (in)</span><br><span class="line">            <span class="keyword">return</span> t;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">std</span>::<span class="built_in">string</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>14.42<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; v&#123;<span class="number">2000</span>, <span class="number">2333</span>, <span class="number">1</span>, <span class="number">1024</span>&#125;;</span><br><span class="line"><span class="comment">//统计大于1024的数的个数</span></span><br><span class="line"><span class="keyword">int</span> cnt = <span class="built_in">std</span>::count_if(v.<span class="built_in">begin</span>(), v.<span class="built_in">end</span>(), <span class="built_in">std</span>::bind(<span class="built_in">std</span>::greater&lt;<span class="keyword">int</span>&gt;(), <span class="built_in">std</span>::placeholders::_1, <span class="number">1024</span>));</span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; cnt &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="built_in">std</span>::<span class="built_in">string</span>&gt; vs&#123;<span class="string">"pooh"</span>, <span class="string">"pooh"</span>, <span class="string">"pooh"</span>, <span class="string">"2333"</span>, <span class="string">"pooh"</span>&#125;;</span><br><span class="line"><span class="comment">//找到第一个不是pooh的字符串</span></span><br><span class="line"><span class="keyword">auto</span> ret = <span class="built_in">std</span>::find_if(vs.<span class="built_in">begin</span>(), vs.<span class="built_in">end</span>(), <span class="built_in">std</span>::bind(<span class="built_in">std</span>::not_equal_to&lt;<span class="built_in">std</span>::<span class="built_in">string</span>&gt;(), <span class="built_in">std</span>::placeholders::_1, <span class="string">"pooh"</span>));</span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; *ret &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; vv&#123;<span class="number">2000</span>, <span class="number">2333</span>, <span class="number">1</span>, <span class="number">1024</span>&#125;;</span><br><span class="line"><span class="comment">//将所有的值乘以2</span></span><br><span class="line"><span class="built_in">std</span>::transform(vv.<span class="built_in">begin</span>(), vv.<span class="built_in">end</span>(), vv.<span class="built_in">begin</span>(), <span class="built_in">std</span>::bind(<span class="built_in">std</span>::multiplies&lt;<span class="keyword">int</span>&gt;(), <span class="built_in">std</span>::placeholders::_1, <span class="number">2</span>));</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">auto</span> it : vv) <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; it &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br></pre></td></tr></table></figure></p>
+<p>14.44<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//使用function实现二元运算</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> i + j;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">divide</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a / b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">auto</span> mod = [](<span class="keyword">int</span> a, <span class="keyword">int</span> b) &#123; <span class="keyword">return</span> a % b; &#125;;</span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">map</span>&lt;<span class="built_in">std</span>::<span class="built_in">string</span>, <span class="built_in">std</span>::function&lt;<span class="keyword">int</span>(<span class="keyword">int</span>, <span class="keyword">int</span>)&gt;&gt; cal =</span><br><span class="line">&#123;</span><br><span class="line">    &#123;<span class="string">"+"</span>, add&#125;,</span><br><span class="line">    &#123;<span class="string">"-"</span>, <span class="built_in">std</span>::minus&lt;<span class="keyword">int</span>&gt;()&#125;,</span><br><span class="line">    &#123;<span class="string">"*"</span>, [](<span class="keyword">int</span> a, <span class="keyword">int</span> b)&#123;<span class="keyword">return</span> a * b;&#125;&#125;,</span><br><span class="line">    &#123;<span class="string">"/"</span>, divide()&#125;,</span><br><span class="line">    &#123;<span class="string">"%"</span>, mod&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">int</span> a, b;</span><br><span class="line"><span class="keyword">char</span> ch;</span><br><span class="line"><span class="keyword">while</span> (<span class="built_in">std</span>::<span class="built_in">cin</span> &gt;&gt; a &gt;&gt; ch &gt;&gt; b)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; a &lt;&lt; ch &lt;&lt; b &lt;&lt; <span class="string">"="</span> &lt;&lt; cal[<span class="built_in">std</span>::<span class="built_in">string</span>(<span class="number">1</span>, ch)](a, b) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>14.45<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">explicit</span> <span class="keyword">operator</span> <span class="title">std::string</span><span class="params">()</span> <span class="keyword">const</span> <span class="comment">//string</span></span></span><br><span class="line"><span class="function"></span>&#123;  </span><br><span class="line">    <span class="keyword">return</span> bookNo;  </span><br><span class="line">&#125;  </span><br><span class="line"><span class="function"><span class="keyword">explicit</span> <span class="keyword">operator</span> <span class="title">double</span><span class="params">()</span> <span class="keyword">const</span> <span class="comment">//double  </span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> revenue;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/C/">C++</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+
+<SCRIPT language=javascript>
+function search(formname) {
+    formname.method = "get";
+    formname.action = "http://www.google.com/google";
+    document.search_form.word.value = document.search_form.word.value + " site:wintefell30";
+    return true;
+}
+</SCRIPT>
+
+<div class="search">
+    <form name="search_form" target="_blank" onsubmit="search(this)">
+        <input type="search" name="word" results="0" placeholder="搜索" onblur="this.value=''">
+        <!-- <input type="submit" value="搜索"> -->
+    </form>
+</div>
+
+  <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=280 height=450 src="//music.163.com/outchain/player?type=0&id=118612228&auto=0&height=430"></iframe>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/C/">C++</a><small>11</small></li>
+  
+    <li><a href="/tags/Haskell/">Haskell</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux/">Linux</a><small>2</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>2</small></li>
+  
+    <li><a href="/tags/备忘/">备忘</a><small>1</small></li>
+  
+    <li><a href="/tags/杂记/">杂记</a><small>3</small></li>
+  
+    <li><a href="/tags/模板/">模板</a><small>1</small></li>
+  
+    <li><a href="/tags/系统/">系统</a><small>2</small></li>
+  
+    <li><a href="/tags/网络/">网络</a><small>4</small></li>
+  
+    <li><a href="/tags/资料/">资料</a><small>3</small></li>
+  
+    <li><a href="/tags/题解/">题解</a><small>6</small></li>
+  
+  </ul>
+</div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+    <ul class="entry">
+        
+          <li>
+            <a href="http://blog.bipedalbit.net/">Bipedalbit</a>
+          </li>
+        
+          <li>
+            <a href="http://ibrother.me">iBrother</a>
+          </li>
+        
+          <li>
+            <a href="http://midgar.moe/">Midgar</a>
+          </li>
+        
+          <li>
+            <a href="http://arcphase20.com/">phase</a>
+          </li>
+        
+          <li>
+            <a href="http://mycodebattle.com">PureFrog</a>
+          </li>
+        
+          <li>
+            <a href="http://www.cnblogs.com/qscqesze/">qscqesze</a>
+          </li>
+        
+          <li>
+            <a href="http://scalpel.vip/">Scalpel</a>
+          </li>
+        
+          <li>
+            <a href="http://www.sevenskey.xyz/365/index.html">Sevenskey</a>
+          </li>
+        
+          <li>
+            <a href="http://shield-sky.github.io/">Shield-sky</a>
+          </li>
+        
+          <li>
+            <a href="http://syhdaily.com/">Syhsyh9696</a>
+          </li>
+        
+          <li>
+            <a href="http://vvwall.com/">vvwall</a>
+          </li>
+        
+    </div>
+  </div>
+
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Winterfell30
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'winterfell30';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>

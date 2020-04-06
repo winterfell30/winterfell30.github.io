@@ -1,0 +1,291 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>防吊打技能入门与进阶 - 动态规划总结 | winterfell30</title>
+  <meta name="author" content="Winterfell30">
+  
+  <meta name="description" content="Always Challenge Miracle">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="防吊打技能入门与进阶 - 动态规划总结">
+  <meta property="og:site_name" content="winterfell30">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="winterfell30" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+</html>
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">winterfell30</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about/index.html">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-07-31T03:28:12.000Z"><a href="/2015/07/31/dpzongjie/">2015-07-31</a></time>
+      
+      
+  
+    <h1 class="title">防吊打技能入门与进阶 - 动态规划总结</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>RT<br><a id="more"></a></p>
+<hr>
+<p>###DP真的是很思维性的东西而且总能有很多题目可以出。</p>
+<p>###这次的动态规划专题全是POJ的题目,但是POJ的评测机总是抽风啊。。。总是504</p>
+<p>###全面的两个专题因为把代码都贴出来了感觉又长又乱，但是没有查到Markdown怎么折叠全部代码(就是博客园的那种ViewCode)</p>
+<h2 id="所以为了看起来舒服一点，只能贴在网站上，如果有巨巨知道Markdown怎么实现代码折叠请教我一下。。。"><a href="#所以为了看起来舒服一点，只能贴在网站上，如果有巨巨知道Markdown怎么实现代码折叠请教我一下。。。" class="headerlink" title="###所以为了看起来舒服一点，只能贴在网站上，如果有巨巨知道Markdown怎么实现代码折叠请教我一下。。。"></a>###所以为了看起来舒服一点，只能贴在网站上，如果有巨巨知道Markdown怎么实现代码折叠请教我一下。。。</h2><p>##POJ 1848    Tree</p>
+<p>给出一个树的一些节点，问最少需要添加多少边能让所有的节点都在一个三元环里面，实际上这是做的第一个树形DP。。。于是就去学习了一下树形DP，做了一道最基础的树形DP(poj2342)有了一些了解，然后这题还是不会= =。去看了题解才勉强A了。<br>转态方程如下(参考原题解)<br>树形dp：dp[now][0]为以now为根的子树完成题目要求添加的最少边。<br>　　　　　　　 dp[now][1]为除开now这个结点后它的子树满足题目要求所需要的最少边。<br>　　　　　　　 dp[now][2]为now和它的某一个孩子形成至少长度为2的链所需要添加的最少边，未涉及到的点均已满足题目要求。<br>　　 转移方程：dp[now][1]=sum(dp[k][0])，k为now的孩子。</p>
+<p>　　　　　　　 dp[now][2]=sum(dp[k][0])-dp[i][0]+min(dp[i][1],dp[i][2])，即从孩子中找一个，now会与它组成长度大于等于2的链<br>　　　　　　　 dp[now][0]=sum(dp[k][0])-dp[i][0]+dp[i][2]+1或sum(dp[k][0])-dp[i][0]-dp[j][0]+min(dp[i][1],dp[i][2])+min(dp[j][1],dp[j][2])，前者是找一个有长度至少为2的链的孩子，后者是找两个没有形成环的孩子。<br><a href="http://paste.ubuntu.com/11971098/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>##POJ 1925    Spiderman</p>
+<p>这题的思路还是比较好想的，因为荡过去之后是对称的，所以这里y是一直不变的，但是y也不是没有用的，就是根据现在的柱子高度求出来能允许连接蛛丝的区间，然后维护这个区间,然后DP就可以了。<br><a href="http://paste.ubuntu.com/11971104/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>##POJ 1946    Cow Cycling</p>
+<p>很经典的题，题意搞半天，就是所有牛绕操场跑步，领头的耗费能量为E*E，其他的都是E，问最后能不能跑完。<br>DP[i][j][k]代表第i只牛跑了j圈时耗费了j能量花费的时间<br>最后求出来的dp[N][D][]求最大值就可以了，做起来很像Floyd算法。<br><a href="http://paste.ubuntu.com/11971110/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>##POJ 1985    Cow Marathon</p>
+<p>实际上就是求树的直径，先随便找一个点求出来最远的点，然后再用这个点求出来最远的点，那么距离就是直径了。<br><a href="http://paste.ubuntu.com/11971117/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>##POJ 2057    The Lost House</p>
+<p>树形DP，这题做了挺久的，在这篇论文里面是个例题：<a href="http://wenku.baidu.com/link?url=oeChDMyE1s1azI4BLUNrq1Mgy0UDiuk7XP-2rc2bB0Qm0PSiM3c0cHbIpxBr8EVvNzu8ples2SiW5Cq7dfJg9ywVdXk6LkdQLW745Uqisua" target="_blank" rel="noopener">浅谈贪心思想在动态规划中的应用</a><br>这里要想让期望最大，要通过排序找出重复步数最少的走法，再具体的证明什么的还是论文里面讲的更详细就不再赘述了。<br><a href="http://paste.ubuntu.com/11971518/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>##POJ 2137    Cowties</p>
+<p>显示枚举每头牛，然后枚举开头的牛的位置，枚举现在枚举到的牛的位置，枚举现在枚举到的牛的前一头牛的位置，最后枚举最后一头牛和第一头牛的位置。反正就是欺负他数据小各种枚举就是了2333<br>DP[i][j][k]代表第一头牛在j位置时第i头牛在k位置时的最短绳子长度。<br><a href="http://paste.ubuntu.com/11971513/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>##POJ 2181    Jumping Cows</p>
+<p>从给出的数列选择一些相加，按顺序奇数加偶数减问结果最大是多少。<br>因为是交叉相加的，所以搞一个偶数和奇数数组分别维护最后取较大者就可以了。<br><a href="http://paste.ubuntu.com/11971522/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>##POJ 2184    Cow Exhibition</p>
+<p>这题就是个变形的01背包，不过因为有负数的出现，所以这里要整体平移100000防止负数，然后背包的最内层也要分别从前往后推和从后往前推，之前对这个不是很了解，一是防止负数使dp数组越界，二是滚动数组对前面dp的值有要求，推的顺序是有要求的。<br>然后就是题目中的要求单项的和是正数最后求答案的时候判断一下就可以了。<br><a href="http://paste.ubuntu.com/11971528/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>##POJ 2192    Zipper</p>
+<p>额。。这题我的代码是DFS的。。我算了一下DP的话复杂度会超(实际上要超都会超了。。。<br>实际上DFS和DP思路上差别不大都是直接比较的。<br><a href="http://paste.ubuntu.com/11971532/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>##POJ 2231    Moo Volume</p>
+<p>这题之前写过，但是当时的写法复杂度有点超，稍微优化一下变成递推形式就从500ms变成32毫秒了。<br>所以说！！！有的时候你的思路可能是没错的，只是你还没找到最好的写法！！！<br><a href="http://paste.ubuntu.com/11973999/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>##POJ 2241    The Tower of Babylon</p>
+<p>传统的DP，只是这里用了一点贪心思想先按l拍一下序，还有这个a[]的读入的写法是我参考别人的，感觉很优雅<br>这里min，max的使用为后面省了很多代码。<br><a href="http://paste.ubuntu.com/11971542/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>##POJ 2250    Compromise</p>
+<p>就是个字符串版的最长公共子串，用string存上，注意维护一个数组打印路径就行了。<br><a href="http://paste.ubuntu.com/11971552/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>##POJ 2385    Apple Catching</p>
+<p>次奶牛只有两种决策，在某一分钟的时候转移或者不转移，我们只要知道前面分钟两者之间的最大值，继而可以得到当前状态的最大值<br>动态规划设dp[T][W]代表第T分钟的时候移动W次的所得到的最大苹果数<br>状态转移方程:dp[T][W] = max(dp[T-1][W] + (a[T] == W%2+1), dp[T-1][W-1] + (a[T] == W%2 + 1))<br>a[T] == W%2 + 1,是看当前转移了W次后在哪棵树下，当前能不能得到这个苹果<br><a href="http://paste.ubuntu.com/11971554/" target="_blank" rel="noopener">AC代码链接</a></p>
+<p>###大致这些，如有错误欢迎留言指正。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/题解/">题解</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+
+<SCRIPT language=javascript>
+function search(formname) {
+    formname.method = "get";
+    formname.action = "http://www.google.com/google";
+    document.search_form.word.value = document.search_form.word.value + " site:wintefell30";
+    return true;
+}
+</SCRIPT>
+
+<div class="search">
+    <form name="search_form" target="_blank" onsubmit="search(this)">
+        <input type="search" name="word" results="0" placeholder="搜索" onblur="this.value=''">
+        <!-- <input type="submit" value="搜索"> -->
+    </form>
+</div>
+
+  <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=280 height=450 src="//music.163.com/outchain/player?type=0&id=118612228&auto=0&height=430"></iframe>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/C/">C++</a><small>11</small></li>
+  
+    <li><a href="/tags/Haskell/">Haskell</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux/">Linux</a><small>2</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>2</small></li>
+  
+    <li><a href="/tags/备忘/">备忘</a><small>1</small></li>
+  
+    <li><a href="/tags/杂记/">杂记</a><small>3</small></li>
+  
+    <li><a href="/tags/模板/">模板</a><small>1</small></li>
+  
+    <li><a href="/tags/系统/">系统</a><small>2</small></li>
+  
+    <li><a href="/tags/网络/">网络</a><small>4</small></li>
+  
+    <li><a href="/tags/资料/">资料</a><small>3</small></li>
+  
+    <li><a href="/tags/题解/">题解</a><small>6</small></li>
+  
+  </ul>
+</div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+    <ul class="entry">
+        
+          <li>
+            <a href="http://blog.bipedalbit.net/">Bipedalbit</a>
+          </li>
+        
+          <li>
+            <a href="http://ibrother.me">iBrother</a>
+          </li>
+        
+          <li>
+            <a href="http://midgar.moe/">Midgar</a>
+          </li>
+        
+          <li>
+            <a href="http://arcphase20.com/">phase</a>
+          </li>
+        
+          <li>
+            <a href="http://mycodebattle.com">PureFrog</a>
+          </li>
+        
+          <li>
+            <a href="http://www.cnblogs.com/qscqesze/">qscqesze</a>
+          </li>
+        
+          <li>
+            <a href="http://scalpel.vip/">Scalpel</a>
+          </li>
+        
+          <li>
+            <a href="http://www.sevenskey.xyz/365/index.html">Sevenskey</a>
+          </li>
+        
+          <li>
+            <a href="http://shield-sky.github.io/">Shield-sky</a>
+          </li>
+        
+          <li>
+            <a href="http://syhdaily.com/">Syhsyh9696</a>
+          </li>
+        
+          <li>
+            <a href="http://vvwall.com/">vvwall</a>
+          </li>
+        
+    </div>
+  </div>
+
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Winterfell30
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'winterfell30';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>

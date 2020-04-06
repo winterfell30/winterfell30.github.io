@@ -1,0 +1,268 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>Python Socket编程 | winterfell30</title>
+  <meta name="author" content="Winterfell30">
+  
+  <meta name="description" content="Always Challenge Miracle">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Python Socket编程">
+  <meta property="og:site_name" content="winterfell30">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="winterfell30" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+</html>
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">winterfell30</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about/index.html">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-11-22T13:49:42.000Z"><a href="/2016/11/22/pythonsocketlearning/">2016-11-22</a></time>
+      
+      
+  
+    <h1 class="title">Python Socket编程</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>RT<br><a id="more"></a></p>
+<p>粗略看了一下CSAPP的后面的几章，就很想试一下客户端服务端连接，但是像书里那种纯C的代码就有点麻烦什么都要写。<br>所以就选择了用python这么一个很抽象但是很方便的语言来写了。。。</p>
+<p>首先来写客户端代码：<br>我们要用的套接字是socket,AF_INET是IPV4的套接字类型，SOCK_STREAM是TCP协议。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import socket</span><br><span class="line">import sys;</span><br><span class="line"></span><br><span class="line">try:</span><br><span class="line">    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">except (socket.error) as msg:</span><br><span class="line">    print(<span class="string">'Failed to creat socket.Error code: '</span> + str[msg[<span class="number">0</span>]] + <span class="string">', Error message : '</span> + msg[<span class="number">1</span>])</span><br><span class="line">    sys.<span class="keyword">exit</span>();</span><br><span class="line"></span><br><span class="line">print(<span class="string">'Socket Created'</span>)</span><br></pre></td></tr></table></figure>
+<p>这里我们用baidu来做测试<del>（听说百度主页的最大用处就是测试网络）</del><br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">host = <span class="string">'www.baidu.com'</span></span><br><span class="line">port = 80</span><br><span class="line"></span><br><span class="line">try:</span><br><span class="line">    remote_ip = socket.gethostbyname(host)</span><br><span class="line">except socket.gaierror:</span><br><span class="line">    <span class="builtin-name">print</span>(<span class="string">'Hostname could not be resolved. exiting'</span>)</span><br><span class="line">    sys.exit();</span><br><span class="line"></span><br><span class="line"><span class="builtin-name">print</span>(<span class="string">'Ip address of '</span> + host + <span class="string">' is '</span> + remote_ip)</span><br></pre></td></tr></table></figure></p>
+<p>连接网络<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">s.connect((remote_ip, port))</span><br><span class="line"><span class="function"><span class="title">print</span><span class="params">(<span class="string">'Socket Connected to '</span> + host + <span class="string">' on ip '</span> + remote_ip)</span></span></span><br></pre></td></tr></table></figure></p>
+<p>发送GET并且观察返回值，然后关闭连接<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">message = <span class="string">"GET / HTTP/1.1\r\n\r\n"</span></span><br><span class="line"></span><br><span class="line">try:</span><br><span class="line">    s.sendall(message.encode())</span><br><span class="line">except socket.error:</span><br><span class="line">    print(<span class="string">'Send fail'</span>)</span><br><span class="line">    sys.<span class="keyword">exit</span>()</span><br><span class="line"></span><br><span class="line">print(<span class="string">'Message send successfully'</span>)</span><br><span class="line"></span><br><span class="line">reply = s.recv(<span class="number">4096</span>)</span><br><span class="line">print(reply)</span><br><span class="line"></span><br><span class="line">s.close()</span><br></pre></td></tr></table></figure></p>
+<p>然后是服务器端的代码<br>服务器端到工作流程大致就是先创建socket，然后绑定IP和端口，绑定之后开始监听，listen中的参数10代表最多可以有10个连接请求在队列中。<br>然后等待客户端连接（这里我们用telnet模拟测试，运行服务器端然后在终端输入telnet localhost 8888即可），accept之后接收客户端发来的信息，同时返回信息用于测试。</p>
+<p>显然我们按照这个流程走一遍的话只能连接一个终端并且只能接收一次数据，于是我们可以用一个while不停的accept。<br>这样虽然解决了一次就结束到缺陷，但是依然每个终端只能接收一个数据就结束，然后不能同时两个终端一起发送，必须一个结束之后才能进行另外一个。<br>对于第一个问题，我们只需要在每次连接之后都在里面再设置一个while(1)的循环控制能接收多次数据即可，退出时按Ctrl+]然后close关闭。<br>对于第二个问题，自然而然的能想到用多线程来解决，对于每一个终端(端口)创建一个线程，这样就能互不干扰了。<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">import socket</span><br><span class="line">import sys</span><br><span class="line"><span class="keyword">from</span> _thread import*</span><br><span class="line"></span><br><span class="line">host = <span class="string">''</span></span><br><span class="line">port = 8888</span><br><span class="line"></span><br><span class="line">s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line"><span class="builtin-name">print</span>(<span class="string">'Socket created'</span>)</span><br><span class="line"></span><br><span class="line">try:</span><br><span class="line">    s.bind((host, port))</span><br><span class="line">except (socket.error) as msg:</span><br><span class="line">    <span class="builtin-name">print</span>(<span class="string">'Bind failed, Error Code: '</span> + str(msg[0]) + <span class="string">' Message '</span> + msg[1])</span><br><span class="line">    sys.exit()</span><br><span class="line"></span><br><span class="line"><span class="builtin-name">print</span>(<span class="string">'Socket bind complete'</span>)</span><br><span class="line"></span><br><span class="line">s.listen(10)</span><br><span class="line"><span class="builtin-name">print</span>(<span class="string">'Socket now listening'</span>)</span><br><span class="line"></span><br><span class="line">def clientthread(conn):</span><br><span class="line">    conn.send(<span class="string">"Welcome to the server. Type something and hit enter\n"</span>.encode())</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        data = conn.recv(1024)</span><br><span class="line">        reply = <span class="string">'OK...'</span>.encode() + data</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> data:</span><br><span class="line">            break</span><br><span class="line">        conn.sendall(reply)</span><br><span class="line">    conn.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (1):</span><br><span class="line">    conn, addr = s.accept()</span><br><span class="line">    <span class="builtin-name">print</span>(<span class="string">'Connected with '</span> + addr[0] + <span class="string">':'</span> + str(addr[1]))</span><br><span class="line"></span><br><span class="line">    start_new_thread(clientthread, (conn,))</span><br><span class="line"></span><br><span class="line">s.close()</span><br></pre></td></tr></table></figure></p>
+<p>这里面学到了一些py3的语法小知识。。。’OK…’和data这种在python3中是两种字符串类型，需要.encode转换一下。<br>在处理异常传递参数的时候python2可以socket.error, msg这样用逗号隔开,在python3中需要写成(socket.error) as msg<br>在import时有两种方法，用_thread举个例子，可以用常规的import _thread 这样import之后调用类的时候必须要先写上_thread.start_new_thread()<br>用from _thread import xxx方法的时候可以直接在下面调用start_new_thread()。这样虽然写起来更简单，但是有可能会导致命名混乱。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Python/">Python</a>, <a href="/tags/网络/">网络</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+
+<SCRIPT language=javascript>
+function search(formname) {
+    formname.method = "get";
+    formname.action = "http://www.google.com/google";
+    document.search_form.word.value = document.search_form.word.value + " site:wintefell30";
+    return true;
+}
+</SCRIPT>
+
+<div class="search">
+    <form name="search_form" target="_blank" onsubmit="search(this)">
+        <input type="search" name="word" results="0" placeholder="搜索" onblur="this.value=''">
+        <!-- <input type="submit" value="搜索"> -->
+    </form>
+</div>
+
+  <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=280 height=450 src="//music.163.com/outchain/player?type=0&id=118612228&auto=0&height=430"></iframe>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/C/">C++</a><small>11</small></li>
+  
+    <li><a href="/tags/Haskell/">Haskell</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux/">Linux</a><small>2</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>2</small></li>
+  
+    <li><a href="/tags/备忘/">备忘</a><small>1</small></li>
+  
+    <li><a href="/tags/杂记/">杂记</a><small>3</small></li>
+  
+    <li><a href="/tags/模板/">模板</a><small>1</small></li>
+  
+    <li><a href="/tags/系统/">系统</a><small>2</small></li>
+  
+    <li><a href="/tags/网络/">网络</a><small>4</small></li>
+  
+    <li><a href="/tags/资料/">资料</a><small>3</small></li>
+  
+    <li><a href="/tags/题解/">题解</a><small>6</small></li>
+  
+  </ul>
+</div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+    <ul class="entry">
+        
+          <li>
+            <a href="http://blog.bipedalbit.net/">Bipedalbit</a>
+          </li>
+        
+          <li>
+            <a href="http://ibrother.me">iBrother</a>
+          </li>
+        
+          <li>
+            <a href="http://midgar.moe/">Midgar</a>
+          </li>
+        
+          <li>
+            <a href="http://arcphase20.com/">phase</a>
+          </li>
+        
+          <li>
+            <a href="http://mycodebattle.com">PureFrog</a>
+          </li>
+        
+          <li>
+            <a href="http://www.cnblogs.com/qscqesze/">qscqesze</a>
+          </li>
+        
+          <li>
+            <a href="http://scalpel.vip/">Scalpel</a>
+          </li>
+        
+          <li>
+            <a href="http://www.sevenskey.xyz/365/index.html">Sevenskey</a>
+          </li>
+        
+          <li>
+            <a href="http://shield-sky.github.io/">Shield-sky</a>
+          </li>
+        
+          <li>
+            <a href="http://syhdaily.com/">Syhsyh9696</a>
+          </li>
+        
+          <li>
+            <a href="http://vvwall.com/">vvwall</a>
+          </li>
+        
+    </div>
+  </div>
+
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Winterfell30
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'winterfell30';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>

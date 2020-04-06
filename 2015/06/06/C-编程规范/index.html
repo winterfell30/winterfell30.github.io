@@ -1,0 +1,424 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>《高质量C++编程指南》即C++编程规范 | winterfell30</title>
+  <meta name="author" content="Winterfell30">
+  
+  <meta name="description" content="Always Challenge Miracle">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="《高质量C++编程指南》即C++编程规范">
+  <meta property="og:site_name" content="winterfell30">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="winterfell30" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+</html>
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">winterfell30</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about/index.html">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-06-06T03:32:14.000Z"><a href="/2015/06/06/C-编程规范/">2015-06-06</a></time>
+      
+      
+  
+    <h1 class="title">《高质量C++编程指南》即C++编程规范</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>RT<br><a id="more"></a></p>
+<p>看到很多大神们的代码符号之间一些空格感觉很漂亮，于是也打算开始使用这种风格写代码，后来发现原来不只是空格，还有很多写法都是不符合标准的，于是开始看C++的编程规范，让代码尽量标准化一点，但是左大括号不要重起一行这条可以去死了。。。<br>以下为转载，原文链接点这里：<a href="http://www.cnblogs.com/dongzhiquan/archive/2010/11/20/1994534.html" target="_blank" rel="noopener">仓</a>。</p>
+<p>读这本书,感觉非常有用.只是有些公用的规则就不一一列举,只记下自己以前不是那么清楚地规则。</p>
+<pre><code>代码质量保证优先原则:
+    （1）正确性，指程序要实现设计要求的功能。
+    （2）稳定性、安全性，指程序稳定、可靠、安全。
+    （3）可测试性，指程序要具有良好的可测试性。
+    （4）规范/可读性，指程序书写风格、命名规则等要符合规范。
+    （5）全局效率，指软件系统的整体效率。
+    （6）局部效率，指某个模块/子模块/函数的本身效率。
+    （7）个人表达方式/个人方便性，指个人编程习惯。
+
+C语言中，static局部变量将在内存“数据区”中生成，而非static局部变量将在“堆栈”中生成。
+长语句分多行书写比:在低优先级操作符处划分新行，可使每一行具有相当独立而完整的含义，从而比较清晰。折行时，操作符要放行首。拆分出的新行要进行适当的缩进，使排版整齐，语句可读。
+如果case 语句中需要定义新的变量,则必须用{}括起来,否则可以不必用{}.
+内存释放后，一定要把指针置为NULL.
+编程时，要防止差1错误。
+有可能的话，if语句尽量加上else分支，对没有else分支的语句要小心对待；switch语句必须有default分支。
+资源文件（多语言版本支持），如果资源是对语言敏感的，应让该资源与源代码文件脱离，具体方法有下面几种：使用单独的资源文件、DLL文件或其它单独的描述文件（如数据库格式）
+某些语句经编译后产生告警，但如果你确认它是正确的，那么应通过某种手段去掉告警信息。
+
+C++语言中，函数的参数和返回值的传递方式有三种：值传递、指针传递和引用传递。
+</code></pre><p>内存分配:<br>    内存分配方式有三种：<br>    （1） 从静态存储区域分配。内存在程序编译的时候就已经分配好，这块内存在程序的整个运行期间都存在。例如全局变量，static 变量。<br>    （2） 在栈上创建。在执行函数时，函数内局部变量的存储单元都可以在栈上创建，函数执行结束时这些存储单元自动被释放。栈内存分配运算内置于处理器的指令集中，效率很高，但是分配的内存容量有限。<br>    （3） 从堆上分配，亦称动态内存分配。程序在运行的时候用 malloc 或 new 申请任意多少的内存，程序员自己负责在何时用 free 或 delete 释放内存。动态内存的生存期由我们决定，使用非常灵活，但问题也最多释放了内存却继续使用它。<br>    有三种情况：<br>    （1）程序中的对象调用关系过于复杂，实在难以搞清楚某个对象究竟是否已经释放了内存，此时应该重新设计数据结构，从根本上解决对象管理的混乱局面。<br>    （2）函数的 return 语句写错了，注意不要返回指向“栈内存”的“指针”或者“引用” ，因为该内存在函数体结束时被自动销毁。<br>    （3）使用 free 或 delete 释放了内存后，没有将指针设置为 NULL。导致产生“野指针” 。<br>        char a[] = “hello”;<br>        a[0] = ‘X’;<br>        cout &lt;&lt; a &lt;&lt; endl;<br>        char <em>p = “world”;     //  注意 p 指向常量字符串<br>        p[0] = ‘X’;            //  编译器不能发现该错误<br>        cout &lt;&lt; p &lt;&lt; endl;<br>格式:<br>    在每个类声明之后、每个函数定义结束之后都要加空行。<br>空格添加:<br>    函数名之后不要留空格，紧跟左括号‘ （’ ，以与关键字区别。<br>    ‘ （’向后紧跟， ‘） ’ 、 ‘， ’ 、 ‘;’向前紧跟，紧跟处不留空格。<br>    象 if、for、while 等关键字之后应留一个空格再跟左括号‘ （’ ，以突出关键字。<br>    如果‘;’不是一行的结束符号，其后要留空格，如 for (initialization; condition; update)。<br>    if、for、while、switch等与后面的括号间应加空格，使if等关键字更为突出、明显。<br>    逗号、分号只在后面加空格。<br>    赋值操作符、比较操作符、算术操作符、逻辑操作符、位域操作符，如“=” 、 “+=”  “&gt;=” 、 “&lt;=” 、 “+” 、 “</em>” 、 “%” 、 “&amp;&amp;” 、 “||” 、 “&lt;&lt;”,“^”等二元操作符的前后应当加空格。<br>    一元操作符如“!” 、 “~” 、 “++” 、 “–” 、 “&amp;” （地址运算符）等前后不加空格。<br>        应当将修饰符 <em>  和  ＆  紧靠变量名<br>        若将修饰符 </em>  靠近数据类型，例如：int<em>  x;  从语义上讲此写法比较直观，即 x 是<br>        int  类型的指针。<br>        上述写法的弊端是容易引起误解，例如：int</em>  x, y;  此处 y 容易被误解为指针变量。<br>        虽然将 x 和 y 分行定义可以避免误解，但并不是人人都愿意这样做。<br>    对于表达式比较长的 for 语句和 if 语句，为了紧凑起见可以适当地去掉一些空格，如 for (i=0; i&lt;10; i++)和 if ((a&lt;=b) &amp;&amp; (c&lt;=d))<br>        不好的实践:for (i = 0; I &lt; 10; i ++)                 //  过多的空格<br>注释:<br>    对变量的定义和分支语句（条件分支、循环语句等）必须编写注释。<br>    好的实践:当代码规模较大,逻辑复杂时,先写注释，再写代码有利于理清思路.<br>    将注释与其上面的代码用空行隔开.<br>    在命名良好的程序里可以减少注释,充分利用代码的自注释.<br>    注释的目的是解释代码的目的、功能和采用的方法，提供代码以外的信息，帮助读者理解代码，防止没必要的重复注释信息。<br>    通过对函数或过程、变量、结构等正确的命名以及合理地组织代码的结构，使代码成为自注释的。<br>参数:<br>    明确规定对接口函数参数的合法性检查应由函数的调用者负责还是由接口函数本身负责，缺省是由函数调用者负责。<br>    非调度函数应减少或防止控制参数，尽量只使用数据参数。 (本建议目的是防止函数间的控制耦合。调度函数是指根据输入的消息类型或控制命令，来启动相应的功能实体（即函数或过程），而本身并不完成具体功能。控制参数是指改变函数功能行为的参数，即函数要根据此参数来决定具体怎样工作。非调度函数的控制参数增加了函数间的控制耦合，很可能使函数间的耦合度增大，并使函数的功能不唯一。)<br>函数:<br>    功能不明确较小的函数，特别是仅有一个上级函数调用它时，应考虑把它合并到上级函数中，而不必单独存在。<br>    当一个过程（函数）中对较长变量（一般是结构的成员）有较多引用时，可以用一个意义相当的宏代替。<br>      示例：在某过程中较多引用TheReceiveBuffer[FirstSocket].byDataPtr，则可以通过以下宏定义来代替：# define pSOCKDATA TheReceiveBuffer[FirstScoket].byDataPtr<br>DEBUG:<br>    同一工程调测打印出的信息串的格式要有统一的形式。信息串中至少要有所在模块名（或源文件名）及行号。<br>    使用断言来发现软件问题，提高代码可测性。<br>        下面是C语言中的一个断言，用宏来设计的。（其中NULL为0L）</p>
+<pre><code>#ifdef _EXAM_ASSERT_TEST_ // 若使用断言测试
+
+    void exam_assert( char * file_name, unsigned int line_no )
+    {
+        printf( &quot;\n[EXAM]Assert failed: %s, line %u\n&quot;,
+        file_name, line_no );
+        abort( );
+    }
+
+    #define EXAM_ASSERT( condition )
+    if (condition) // 若条件成立，则无动作
+        NULL;
+    else // 否则报告
+        exam_assert( __FILE__, __LINE__ )
+
+#else // 若不使用断言测试
+
+    #define EXAM_ASSERT(condition) NULL
+
+#endif /* end of ASSERT */
+</code></pre><p>循环:<br>    在多重循环中，应将最忙的循环放在最内层。(说明：减少CPU切入循环层的次数。)<br>    在多重循环中，如果有可能，应当将最长的循环放在最内层，最短的循环放在最外层， 以减少CPU跨切循环层的次数。<br>    避免循环体内含判断语句，应将循环语句置于判断语句的代码块之中。(说明：目的是减少判断次数。循环体中的判断语句是否可以移到循环体外，要视程序的具体情况而言，一般情况，与循环变量无关的判断语句可以移到循环体外，而有关的则不可以。)<br>细节:<br>    尽量用乘法或其它方法代替除法，特别是浮点运算中的除法。(说明：浮点运算除法要占用较多CPU资源。#define PAI_RECIPROCAL (1 / 3.1416 ) // 编译器编译时，将生成具体浮点数)</p>
+<p>////////////////////////////////</p>
+<p>头文件:<br>    头文件的作用:<br>        （1）通过头文件来调用库功能。在很多场合，源代码不便（或不准）向用户公布，只要向用户提供头文件和二进制的库即可。用户只需要按照头文件中的接口声明来调用库功能，而不必关心接口怎么实现的。编译器会从库中提取相应的代码。<br>        （2）头文件能加强类型安全检查。如果某个接口被实现或被使用时，其方式与头文件中的声明不一致，编译器就会指出错误，这一简单的规则能大大减轻程序员调试、改错的负担。<br>    头文件中只存放“声明”而不存放“定义”;头文件里面需要放置定义的情况<br>    不提倡使用全局变量，尽量不要在头文件中出现象 extern int value  这类声明。 ;Extern作用(参考C++programming)<br>类:<br>    （1）将private 类型的数据写在前面，而将 public 类型的函数写在后面。采用这种版式的程序员主张类的设计“以数据为中心” ，重点关注类的内部结构。<br>    （2）将public 类型的函数写在前面，而将 private 类型的数据写在后面。采用这种版式的程序员主张类的设计“以行为为中心” ，重点关注的是类应该提供什么样的接口（或服务） 。<br>    全局函数和类的成员函数同名不算重载，因为函数的作用域不同。</p>
+<pre><code>全局函数被调用时应加‘::’标志。如  ::Print(…); //  表示 Print 是全局函数而非成员函数。
+    成员函数被重载的特征： 
+    （1）相同的范围（在同一个类中） ； 
+    （2）函数名字相同； 
+    （3）参数不同； 
+    （4）virtual 关键字可有可无。 
+覆盖是指派生类函数覆盖基类函数，特征是： 
+    （1）不同的范围（分别位于派生类与基类） ； 
+    （2）函数名字相同； 
+    （3）参数相同； 
+    （4）基类函数必须有 virtual 关键字。
+“隐藏”是指派生类的函数屏蔽了与其同名的基类函数，规则如下： 
+    （1）如果派生类的函数与基类的函数同名，但是参数不同。此时，不论有无 virtual 关键字，基类的函数将被隐藏（注意别与重载混淆） 。 
+    （2）如果派生类的函数与基类的函数同名，并且参数也相同，但是基类函数没有 virtual关键字。此时，基类的函数被隐藏（注意别与覆盖混淆） 。
+    很多 C++程序员没有意识到有“隐藏”这回事。由于认识不够深刻，“隐藏”的发生可谓神出鬼没，常常产生令人迷惑的结果。 
+    初始化表达式表（简称初始化表）:初始化表位于函数参数表之后，却在函数体{}之前。这说明该表里的初始化工作发生在函数体内的任何代码被执行之前。 
+
+构造函数初始化表的使用规则：
+    如果类存在继承关系，派生类必须在其初始化表里调用基类的构造函数。
+    类的 const 常量只能在初始化表里被初始化，因为它不能在函数体内用赋值的方式来初始化.
+    非内部数据类型的成员对象应当采用第一种方式初始化，以获取更高的效率。
+
+如果不主动编写拷贝构造函数和赋值函数，编译器将以“位拷贝”的方式自动生成缺省的函数。倘若类中含有指针变量，那么这两个缺省的函数就隐含了错误,赋值前后对象中的指针变量将指向同一块内存,导致无法正确释放内存。
+    String  c = a; //  调用了拷贝构造函数，最好写成 c(a); 
+    c = b;  //  调用了赋值函数 
+    第三个语句的风格较差，宜改写成 String c(a)以区别于第四个语句。
+
+如果类之间存在继承关系，在编写上述基本函数时应注意以下事项： 
+    派生类的构造函数应在其初始化表里调用基类的构造函数。 
+    基类与派生类的析构函数应该为虚（即加 virtual 关键字）
+</code></pre><p>命名:<br>    一般来说，长名字能更好地表达含义，所以函数名、变量名、类名长达十几个字符不足为怪。那么名字是否越长约好？不见得!  例如变量名 maxval 就比 maxValueUntilOverflow好用。单字符的名字也是有用的，常见的如 i,j,k,m,n,x,y,z 等，它们通常可用作函数内的局部变量。<br>    Windows应用程序的标识符通常采用“大小写”混排的方式，如 AddChild。而Unix应用程序的标识符通常采用“小写加下划线”的方式，如 add_child。<br>    全局函数的名字应当使用“动词”或者“动词＋名词” （动宾词组） 。类的成员函数应当只使用“动词” ，被省略掉的名词就是对象本身。<br>    简单的 Windows 应用程序命名规则<br>        作者对“匈牙利”命名规则做了合理的简化，下述的命名规则简单易用，比较适合于 Windows 应用软件的开发。<br>         【规则 3-2-1】类名和函数名用大写字母开头的单词组合而成。<br>        例如：<br>         class Node;     //  类名<br>         class LeafNode;    //  类名<br>         void  Draw(void);   //  函数名<br>         void  SetValue(int value); //  函数名 </p>
+<pre><code> 【规则 3-2-2】变量和参数用小写字母开头的单词组合而成。 
+例如： 
+ BOOL flag; 
+ int  drawMode; 
+
+ 【规则 3-2-3】常量全用大写的字母，用下划线分割单词。 
+例如： 
+ const int MAX = 100; 
+ const int MAX_LENGTH = 100; 
+
+ 【规则 3-2-4】静态变量加前缀 s_（表示 static） 。 
+例如： 
+void Init(…) 
+{ 
+ static int s_initValue; //  静态变量 
+ … 
+} 
+
+ 【规则 3-2-5】如果不得已需要全局变量，则使全局变量加前缀 g_（表示 global） 。 
+例如： 
+int g_howManyPeople; //  全局变量 
+int g_howMuchMoney; //  全局变量 
+
+ 【规则 3-2-6】类的数据成员加前缀 m_（表示 member） ，这样可以避免数据成员与
+成员函数的参数同名。 
+例如： 
+ void Object::SetValue(int width, int height) 
+ { 
+  m_width = width; 
+m_height = height; 
+} 【规则 3-2-7】为了防止某一软件库中的一些标识符和其它软件库中的冲突，可以为
+各种标识符加上能反映软件性质的前缀。例如三维图形标准 OpenGL 的所有库函数
+均以 gl 开头，所有常量（或宏定义）均以 GL 开头
+</code></pre><p>比较:<br>    不可将布尔变量直接与 TRUE、FALSE 或者 1、0 进行比较。<br>    不可将浮点变量用“==”或“！=”与任何数字比较.<br>    应当将整型变量用“==”或“！=”直接与 0 比较。<br>常量:<br>    有时我们希望某些常量只在类中有效。const 数据成员的确是存在的，但其含义却不是我们所期望的。const 数据成员只在某个对象生存期内是常量，而对于整个类而言却是可变的，因为类可以创建多个对象，不同的对象其 const 数据成员的值可以不同。   不能在类声明中初始化 const 数据成员。const 数据成员的初始化只能在类构造函数的初始化表中进行.<br>    如果输入参数以值传递的方式传递对象，则宜改用“const &amp;”方式来传递，这样可以省去临时对象的构造和析构过程，从而提高效率。</p>
+<pre><code>sizeof(a)的值是 12（注意别忘了’\0’） 。指针 p 指向 a，但是 sizeof(p)的值却是 4。这是因为 sizeof(p)得到的是一个指针变量的字节数， 相当于 sizeof(char*)， 而不是 p 所指的内存容量。 C++/C语言没有办法知道指针所指的内存容量，除非在申请内存时记住它。 注意当数组作为函数的参数进行传递时，该数组自动退化为同类型的指针。示例7-3-3（b）中，不论数组 a 的容量是多少，sizeof(a)始终等于 sizeof(char *)。
+
+在用 delete 释放对象数组时，留意不要丢了符号‘[]’ 。例如  
+    delete []objects; //  正确的用法 
+    delete objects; //  错误的用法 
+    后者相当于 delete objects[0]，漏掉了另外 99 个对象。
+
+由于编译后的名字不同，C++程序不能直接调用 C 函数。C++提供了一个 C 连接交换指定符号 extern“C”来解决这个问题。
+    例如： 
+    extern “C” 
+    { 
+       void foo(int x, int y); 
+       … //  其它函数 
+    } 
+    或者写成 
+    extern “C” 
+    { 
+       #include “myheader.h” 
+       … //  其它 C 头文件 
+    } 
+    这就告诉 C++编译译器，函数 foo 是个 C 连接，应该到库中找名字_foo 而不是找_foo_int_int。C++编译器开发商已经对 C 标准库的头文件作了 extern“C”处理，所以我们可以用＃include直接引用这些头文件。 
+
+如果函数有多个参数，参数只能从后向前挨个儿缺省，否则将导致函数调用语句怪模怪样。不合理地使用参数的缺省值将导致重载函数 output 产生二义性。
+
+用内联取代宏代码
+inline 是一种“用于实现的关键字” ，而不是一种“用于声明的关键字” 。一般地，用户可以阅读函数的声明，但是看不到函数的定义。对于任何内联函数，编译器在符号表里放入函数的声明（包括名字、参数类型、返回值类型） 。如果编译器没有发现内联函数存在错误，那么该函数的代码也被放入符号表里。在调用一个内联函数时，编译器首先检查调用是否正确（进行类型安全检查，或者进行自动类型转换，当然对所有的函数都一样） 。如果正确，内联函数的代码就会直接替换函数调用，于是省去了函数调用的开销。这个过程与预处理有显著的不同，因为预处理器不能进行类型安全检查，或者进行自动类型转换。
+定义在类声明之中的成员函数将自动地成为内联函数;将成员函数的定义体放在类声明之中虽然能带来书写上的方便，但不是一种良好的编程风格;将类成员函数放在声明体外定义,然后再加上inline关键字.
+内联是以代码膨胀（复制）为代价，仅仅省去了函数调用的开销，从而提高函数的执行效率。如果执行函数体内代码的时间，相比于函数调用的开销较大，那么效率的收获会很少。另一方面，每一处内联函数的调用都要复制代码，将使程序的总代码量增大，消耗更多的内存空间。以下情况不宜使用内联： 
+    （1）如果函数体内的代码比较长，使用内联将导致内存消耗代价较高。 
+    （2）如果函数体内出现循环，那么执行函数体内代码的时间要比函数调用的开销大。
+一个好的编译器将会根据函数的定义体，自动地取消不值得的内联.
+
+初始化列表的效率比在构造函数体内赋值要高效
+先看一下对象创建,对象的创建分两步：
+1. 数据成员初始化。
+2. 执行被调用构造函数体内的动作。
+当类中存在非基本类型成员变量时,
+会在第一步时首先调用其各个非基本类型成员的构造函数.然后再调用当前类自身的构造函数,此时倘若构造函数中还有赋值操作则需要再次执行一边赋值函数.
+而使用了初始化列表则不同结果,非基本类型成员仅会在第一步中直接调用其成员类型的带参构造函数即可.
+
+前置增减效率高
+
+后置增减操作会隐含产生临时变量，因为它要保存操作前的值所为这条语句的值。如果是对基础类型进行后置增减，在不需要使用操作前的值时，生成临时变量的动作会被编译器优化掉。不过对于已经重载过的后置操作这种优化编译器很难做到，特别常见的就是使用标准库时的迭代器自加操作，应该尽量使用前置增减。
+
+字符串判空
+
+字符串判空的一种高效方式，不用strlen来扫描内存可以提高效率
+
+char * s;
+if (!s || !(*s))
+{
+    return false;
+}
+
+GNU-C自带的STL里的std::string是没有引用计数机制的，赋值操作就是重新分配内存，然后从源内存块复制。
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/C/">C++</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+
+<SCRIPT language=javascript>
+function search(formname) {
+    formname.method = "get";
+    formname.action = "http://www.google.com/google";
+    document.search_form.word.value = document.search_form.word.value + " site:wintefell30";
+    return true;
+}
+</SCRIPT>
+
+<div class="search">
+    <form name="search_form" target="_blank" onsubmit="search(this)">
+        <input type="search" name="word" results="0" placeholder="搜索" onblur="this.value=''">
+        <!-- <input type="submit" value="搜索"> -->
+    </form>
+</div>
+
+  <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=280 height=450 src="//music.163.com/outchain/player?type=0&id=118612228&auto=0&height=430"></iframe>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/C/">C++</a><small>11</small></li>
+  
+    <li><a href="/tags/Haskell/">Haskell</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux/">Linux</a><small>2</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>2</small></li>
+  
+    <li><a href="/tags/备忘/">备忘</a><small>1</small></li>
+  
+    <li><a href="/tags/杂记/">杂记</a><small>3</small></li>
+  
+    <li><a href="/tags/模板/">模板</a><small>1</small></li>
+  
+    <li><a href="/tags/系统/">系统</a><small>2</small></li>
+  
+    <li><a href="/tags/网络/">网络</a><small>4</small></li>
+  
+    <li><a href="/tags/资料/">资料</a><small>3</small></li>
+  
+    <li><a href="/tags/题解/">题解</a><small>6</small></li>
+  
+  </ul>
+</div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+    <ul class="entry">
+        
+          <li>
+            <a href="http://blog.bipedalbit.net/">Bipedalbit</a>
+          </li>
+        
+          <li>
+            <a href="http://ibrother.me">iBrother</a>
+          </li>
+        
+          <li>
+            <a href="http://midgar.moe/">Midgar</a>
+          </li>
+        
+          <li>
+            <a href="http://arcphase20.com/">phase</a>
+          </li>
+        
+          <li>
+            <a href="http://mycodebattle.com">PureFrog</a>
+          </li>
+        
+          <li>
+            <a href="http://www.cnblogs.com/qscqesze/">qscqesze</a>
+          </li>
+        
+          <li>
+            <a href="http://scalpel.vip/">Scalpel</a>
+          </li>
+        
+          <li>
+            <a href="http://www.sevenskey.xyz/365/index.html">Sevenskey</a>
+          </li>
+        
+          <li>
+            <a href="http://shield-sky.github.io/">Shield-sky</a>
+          </li>
+        
+          <li>
+            <a href="http://syhdaily.com/">Syhsyh9696</a>
+          </li>
+        
+          <li>
+            <a href="http://vvwall.com/">vvwall</a>
+          </li>
+        
+    </div>
+  </div>
+
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Winterfell30
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'winterfell30';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>

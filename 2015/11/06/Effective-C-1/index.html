@@ -1,0 +1,291 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>《Effective C++》摘要备忘（一）让自己习惯C++ | winterfell30</title>
+  <meta name="author" content="Winterfell30">
+  
+  <meta name="description" content="Always Challenge Miracle">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="《Effective C++》摘要备忘（一）让自己习惯C++">
+  <meta property="og:site_name" content="winterfell30">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="winterfell30" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+</html>
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">winterfell30</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about/index.html">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-11-06T15:05:57.000Z"><a href="/2015/11/06/Effective-C-1/">2015-11-06</a></time>
+      
+      
+  
+    <h1 class="title">《Effective C++》摘要备忘（一）让自己习惯C++</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>RT<br><a id="more"></a></p>
+<p>####Item2.尽量以const,enum,inline代替#define<br>一直都知道这种说法现在才知道了原因到底是什么。</p>
+<p>#####1.const<br>这要从#define和const的原理说起：<br>#define实际上是用被define的内容来直接替换到代码中，可以直接看成是字符串的替换，#define的问题所在就是#define不被视为语言的一部分，当你这样做时：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ASPECT_RATIO 1.653</span></span><br></pre></td></tr></table></figure></p>
+<p>记号名称ASPECT_RATIO也许从来未被编译器看见。也许在编译器开始处理源码之前他就被预处理器移走了。于是ASPECT_RATIO有可能没进入记号表(symbol table)内。于是当你运用此常量但获得一个编译错误信息时，也许这个错误会提到1.653而不是ASPECT_RATIO。如果ASPECT_RATIO被定义在一个不是你自己写的头文件内，你肯定对这个数字毫无概念，于是你将因为追踪它而浪费时间，这个问题也可能出现在symbolic debugger中，原因相同：你所使用的名称可能并未进入记号表(symbol table)。<br>解决方法就是用常量来替换上述的#define：<br><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="built_in">double</span> ASPECT_RATIO = <span class="number">1.653</span></span><br></pre></td></tr></table></figure></p>
+<p>作为一个语言常量，ASPECT_RATIO肯定会被编译器看到，当然就会进入记号表内。此外对浮点常量而言，使用常量可能比使用#define导致较少量的码，因此预处理器“盲目的将宏ASPECT_RATIO替换1.653”可能导致目标码(object code)出现多份1.653，若改用常量就绝不会出现这种情况。</p>
+<p>PS：我还记得之前做题的时候#define maxn 1&lt;&lt;16的时候结果就是TLE，而换成const int maxn = 1&lt;&lt;16;就可以AC，现在明白了一些作用机理，就拓展一下这两者在内存和时间上的区别吧。被define的内容是不分配内存的，他只是等着运行到某个地方的时候再用字符串替换的方式代入，每次代入都会分配一个内存，所以如果调用很多次的话就会分配很多无用的内存。而const的内容是被写入symbol table的，在定义的时候就分配了内存并计算好了值，调用的时候就直接使用了。</p>
+<p>关于const，这里有两种特殊用法。</p>
+<p>第一是定义常量指针，由于常量定义式通常被放在头文件内，因此有必要将指针（注意不只是指针所指之物）声明为const。<br>例如若在头文件内定义一个常量的char字符串，必须要const两次：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">const</span> authorName = <span class="string">"winterfell30"</span>;</span><br></pre></td></tr></table></figure></p>
+<p>不过要提醒一下的是string对象通常比char更合宜，所以往往定义成这样更好些:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> <span class="title">authorName</span><span class="params">(<span class="string">"winterfel30"</span>)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<p>第二是class专属常量。为了将常量的作用域限制于class内，你必须让它成为class的一个成员，而为确保常量至多只有一个实体，你必须让它成为一个static成员:<br><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="symbol">GamePlayer</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    static <span class="keyword">const</span> <span class="built_in">int</span> NumTurns = <span class="number">5</span>;</span><br><span class="line">    <span class="built_in">int</span> score[NumTurns];</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>顺带一提，我们无法利用#define创建一个class专属常量，因为#define并不重视作用域，即不能提供任何封装性。</p>
+<p>#####2.enum<br>也许看完上面你会想#define要比const功能强的多，所以这里要引入enum back，有很多理由enum值得我们认识它。<br>第一，enum back的行为某方面更像#define而不是const，这时候正是你想要的。比如#define不会非必要的分配地址，enum也是这样，如果你不想让别人获得一个pointer或reference指向你的整数常量，enum可以帮你实现这个约束。<br>第二，enum非常实用，实际上enum back是template metaprogramming（模板元编程，后面会讲到）的基础技术。</p>
+<p>#####3.inline<br>#define可以是一个函数，但是通常会很危险。你必须为所有的实参加上小括号，不然你不知道它被替换到代码中会变成什么样。<br>比如下面这个例子:<br><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#define add(a, b) a + b</span></span><br><span class="line"><span class="attr">sum</span> = add(a, b) * c<span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
+<p>我们的本意是计算(a + b) <em> c，但是他变成了a + b </em> c。如果这个宏的头文件不是你写的话会给程序带来极高的不安全性。<br>还有一个经典的例子：<br><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//以a+b的较大值调用f()函数</span></span><br><span class="line"><span class="selector-id">#define</span> <span class="selector-tag">CALL_WITH_MAX</span>(a, b) <span class="selector-tag">f</span>((a) &gt; (b)) ? (a) : (b))</span><br></pre></td></tr></table></figure></p>
+<p>且不说这个的括号写的有多麻烦，即使是这个宏写的没有缺陷了在调用的时候仍会招惹麻烦。<br><figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> a = <span class="number">5</span>;</span><br><span class="line"><span class="constructor">CALL_WITH_MAX(<span class="operator">++</span><span class="params">a</span>, 0)</span>;   <span class="comment">//a被累加两次</span></span><br><span class="line"><span class="constructor">CALL_WITH_MAX(<span class="operator">++</span><span class="params">a</span>, 10)</span>； <span class="comment">//a被累加一次</span></span><br></pre></td></tr></table></figure></p>
+<p>a的递增次数竟然取决于和谁比较（因为大于的时候提到了a两次）。。。不过我们不必为这个烦恼，inline完美解决：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">callWithMax</span><span class="params">(<span class="keyword">const</span> T&amp; a, <span class="keyword">const</span> T&amp; b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    f(a &gt; b ? a : b);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>除了解决上面的问题之外，由于callWithMax是个真正的函数，他遵守作用域和访问规则，可以写一个class里面的private函数，而宏不可以。</p>
+<p>综上，有了这三个我们对#define的需求降低了，但并非完全消除。#ifdef/#ifndef继续扮演着控制编译的重要角色，目前还不到预处理器引退的时候，但你应该尽可能少的用他们。</p>
+<p>####Item3.尽可能使用const</p>
+<p>面对指针时可以指出指针自身、指针所指物，或两者都（或都不）是const。<br><figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">char</span> greeting[] = <span class="string">"Hello"</span>;</span><br><span class="line"><span class="built_in">char</span>* p = greeting;                //non-<span class="keyword">const</span> <span class="built_in">pointer</span>,non-<span class="keyword">const</span> data</span><br><span class="line"><span class="keyword">const</span> <span class="built_in">char</span>* p = greeting;          //non-<span class="keyword">const</span> <span class="built_in">pointer</span>,<span class="keyword">const</span> data</span><br><span class="line"><span class="built_in">char</span>* <span class="keyword">const</span> p = greeting;          //<span class="keyword">const</span> <span class="built_in">pointer</span>,non-<span class="keyword">const</span> data</span><br><span class="line"><span class="keyword">const</span> <span class="built_in">char</span>* <span class="keyword">const</span> p = greeting;    //<span class="keyword">const</span> <span class="built_in">pointer</span>,<span class="keyword">const</span> data</span><br></pre></td></tr></table></figure></p>
+<p>令函数返回一个常量值，往往可以降低因客户错误而造成的意外，而又不至于放弃安全性和高效性，举个例子：<br><figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">class <span class="type">Rational</span> <span class="meta">&#123;...&#125;</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="type">Rational</span> operator* (<span class="keyword">const</span> <span class="type">Rational</span>&amp; lhs, <span class="keyword">const</span> <span class="type">Rational</span>&amp; rhs);</span><br></pre></td></tr></table></figure></p>
+<p>我当初也不明白这个const的意义是什么，原因是防止客户这样做：<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">Rational</span> a, <span class="keyword">b, </span>c<span class="comment">;</span></span><br><span class="line">(a * <span class="keyword">b) </span>= c<span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
+<p>一般不会有人这样给一个乘积赋值，但是实际编程中会经常出现的就是把==打成=,比如：<br><figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (a * b = c) <span class="meta">&#123;...&#125;</span>         //其实本意只是比较</span><br></pre></td></tr></table></figure></p>
+<p>如果a和b是内置类型，这样的代码就是不合法的，良好的用户自定义类型的特征就是避免无端的与内置类型不兼容（以后会讲），因此这个赋值操作也就没什么意义了，声明为const可以预防那个无意义的赋值动作。<br>两个成员函数如果只是常量性不同可以被重载。这是一个很重要的C++特性，在调用时选择是否加上const即可分别调用。</p>
+<p>成员函数如果是const意味着什么？这有两个流行概念：bitwise constness和logical constness。<br>bitwise constness阵营的人相信成员函数要在不更改任何成员变量时才是const。<br>logical constness是由bitness constness的缺陷导出的，即一个成员函数可以修改它所处理的对象内的某些bits。<br>在const成员函数里面不能直接赋值给成员变量，这时候就需要引入与C++相关的摆动场：mutable（可变的），mutable释放掉non-static成员变量的bitwise constness约束。<br>关于bitwise constness和logical constness还有很多内容不再展开，感兴趣可以到网上查找相关资料。</p>
+<p>当const和non-const成员函数有着实质相同的实现时，令non-const版本调用const版本可避免代码重复，两者之间可以通过转型(casting)完成。</p>
+<p>const是个奇妙且非比寻常的东西，是个强大的助手，尽可能的多使用它。</p>
+<p>####Item4.确认对象在被使用之前已经被初始化</p>
+<p>这个条款在JAVA里面是被明确要求的，而在C++里面却没有，所以就加大了C++的不安全性。<br>在C++里面是否自动初始化也是不确定的，记住所有规则是不现实的，为了减少不愉快的调试过程我们应该永远在使用对象之前将它初始化。</p>
+<p>重点是内置类型之外的东西，初始化的责任就要落在构造函数上面了。<br>初始化看起来很容易执行，重要的是别混淆了赋值和初始化。<br><figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> A</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">int</span> a;</span><br><span class="line">	std::<span class="built_in">string</span> s;</span><br><span class="line">public:</span><br><span class="line">	<span class="constructor">A(<span class="params">const</span> <span class="params">int</span>&amp; <span class="params">_a</span>, <span class="params">std</span>::<span class="params">string</span>&amp; <span class="params">_s</span>)</span>;</span><br><span class="line">&#125;;</span><br><span class="line">A::<span class="constructor">A(<span class="params">const</span> <span class="params">int</span>&amp; <span class="params">_a</span>, <span class="params">std</span>::<span class="params">string</span>&amp; <span class="params">_s</span>)</span>     <span class="comment">//这些都是赋值</span></span><br><span class="line">&#123;                                        <span class="comment">//而非初始化</span></span><br><span class="line">	a = _a;</span><br><span class="line">	s = _s;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>这样做的结果是正确的，但不是最佳做法。最好是使用成员初值列，通常这样效率会高很多。<br>C++有着十分固定的“成员初始化次序”。class的成员变量总是以其声明次序被初始化，虽然打乱顺序的初始化是合法的，但是为了避免出现一些可能存在的晦涩的错误，当你在成员初值列中条列各个成员时，最好总是以声明次序为次序。<br>（晦涩错误指的是一些需要初始化带有次序的情况，比如array需要先指定大小再赋值。）</p>
+<p>为免除“跨编译单元之初始化次序”问题，请以local static对象替换non-local static对象。</p>
+<p>以上为前4个条款（第一章）的摘要和一些需要注意的地方，如果有不正确或者模糊的地方欢迎指正。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/C/">C++</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+
+<SCRIPT language=javascript>
+function search(formname) {
+    formname.method = "get";
+    formname.action = "http://www.google.com/google";
+    document.search_form.word.value = document.search_form.word.value + " site:wintefell30";
+    return true;
+}
+</SCRIPT>
+
+<div class="search">
+    <form name="search_form" target="_blank" onsubmit="search(this)">
+        <input type="search" name="word" results="0" placeholder="搜索" onblur="this.value=''">
+        <!-- <input type="submit" value="搜索"> -->
+    </form>
+</div>
+
+  <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=280 height=450 src="//music.163.com/outchain/player?type=0&id=118612228&auto=0&height=430"></iframe>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/C/">C++</a><small>11</small></li>
+  
+    <li><a href="/tags/Haskell/">Haskell</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux/">Linux</a><small>2</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>2</small></li>
+  
+    <li><a href="/tags/备忘/">备忘</a><small>1</small></li>
+  
+    <li><a href="/tags/杂记/">杂记</a><small>3</small></li>
+  
+    <li><a href="/tags/模板/">模板</a><small>1</small></li>
+  
+    <li><a href="/tags/系统/">系统</a><small>2</small></li>
+  
+    <li><a href="/tags/网络/">网络</a><small>4</small></li>
+  
+    <li><a href="/tags/资料/">资料</a><small>3</small></li>
+  
+    <li><a href="/tags/题解/">题解</a><small>6</small></li>
+  
+  </ul>
+</div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+    <ul class="entry">
+        
+          <li>
+            <a href="http://blog.bipedalbit.net/">Bipedalbit</a>
+          </li>
+        
+          <li>
+            <a href="http://ibrother.me">iBrother</a>
+          </li>
+        
+          <li>
+            <a href="http://midgar.moe/">Midgar</a>
+          </li>
+        
+          <li>
+            <a href="http://arcphase20.com/">phase</a>
+          </li>
+        
+          <li>
+            <a href="http://mycodebattle.com">PureFrog</a>
+          </li>
+        
+          <li>
+            <a href="http://www.cnblogs.com/qscqesze/">qscqesze</a>
+          </li>
+        
+          <li>
+            <a href="http://scalpel.vip/">Scalpel</a>
+          </li>
+        
+          <li>
+            <a href="http://www.sevenskey.xyz/365/index.html">Sevenskey</a>
+          </li>
+        
+          <li>
+            <a href="http://shield-sky.github.io/">Shield-sky</a>
+          </li>
+        
+          <li>
+            <a href="http://syhdaily.com/">Syhsyh9696</a>
+          </li>
+        
+          <li>
+            <a href="http://vvwall.com/">vvwall</a>
+          </li>
+        
+    </div>
+  </div>
+
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Winterfell30
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'winterfell30';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>

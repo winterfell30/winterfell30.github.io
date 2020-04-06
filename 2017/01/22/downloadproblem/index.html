@@ -1,0 +1,265 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>一个Python3多线程爬题程序 | winterfell30</title>
+  <meta name="author" content="Winterfell30">
+  
+  <meta name="description" content="Always Challenge Miracle">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="一个Python3多线程爬题程序">
+  <meta property="og:site_name" content="winterfell30">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="winterfell30" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+</html>
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">winterfell30</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about/index.html">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2017-01-22T02:59:14.000Z"><a href="/2017/01/22/downloadproblem/">2017-01-22</a></time>
+      
+      
+  
+    <h1 class="title">一个Python3多线程爬题程序</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>RT<br><a id="more"></a><br>之前打比赛的时候很想把OJ的题目打印下来上课看，LightOj有直接下载PDF的功能，写了个爬虫因为他的PDF地址一直打不开就搁置了（最后手动下载了一些，在纸上做的感觉还是不错的）<br>现在闲下来了就想搞一下这个，本来以为如果支持大部分OJ的话代码量会比较大,后来发现如果直接从VJ爬的话很多工作VJ都做完了只需要下载和转格式就可以了。<br>需要特殊处理的是UVA，因为UVA是直接找原来的PDF地址下载，其他的都是HTML转PDF。<br>大约在期末考试那两天写了个暴力的版本，放假之后就在想能不能多线程优化一下，想了一些方案，经过一些测试，最后决定使用producer-consumer模式，使用一个生产者线程爬取原题目HTML的网址，使用max个消费者线程下载。<br>然后重写了代码<del>（编程一晚上扯淡一星期）</del><br>经过测试，不管是HTML转换还是UVA的直接下载，多线程版本比普通版都能快2-3倍，考虑到网速才是瓶颈，感觉能优化的地方有限。<br>VJ使用get方法爬取，得到url队列<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getDownlist</span><span class="params">()</span></span><span class="symbol">:</span></span><br><span class="line">    <span class="keyword">while</span> len(<span class="keyword">self</span>.idlist) &gt; <span class="number">0</span><span class="symbol">:</span></span><br><span class="line">        url = <span class="string">"https://vjudge.net/problem/"</span> + <span class="keyword">self</span>.oj + <span class="string">"-"</span> + str(<span class="keyword">self</span>.idlist[<span class="number">0</span>])</span><br><span class="line">        response = requests.get(url, params = values, headers = headers).content</span><br><span class="line">        soup = BeautifulSoup(response, <span class="string">'html.parser'</span>)</span><br><span class="line">        originid = soup.find(attrs = &#123;<span class="string">'data-id'</span><span class="symbol">:True</span>&#125;).attrs[<span class="string">'data-id'</span>]</span><br><span class="line">        originurl = <span class="string">"https://vjudge.net/problem/description/"</span> + str(originid)</span><br><span class="line">        <span class="keyword">self</span>.urlQueue.put((originurl, <span class="keyword">self</span>.oj, <span class="keyword">self</span>.idlist[<span class="number">0</span>]))</span><br><span class="line">        <span class="keyword">self</span>.idlist.pop(<span class="number">0</span>)</span><br></pre></td></tr></table></figure></p>
+<p>开辟一个线程获取网址<br><figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">self</span>.crawler = threading.<span class="keyword">Thread</span>(target=getDownlist())       </span><br><span class="line"><span class="built_in">self</span>.crawler.start()</span><br></pre></td></tr></table></figure></p>
+<p>使用max个线程下载，判断调用哪个下载器，传入urlqueue<br><figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range (self.maxdownloader):<span class="type"></span></span><br><span class="line"><span class="type">    if self</span>.oj == <span class="string">'UVA'</span>:                                      <span class="type"></span>#uva直接下载PDF文件</span><br><span class="line">        <span class="keyword">new</span><span class="type">thread</span> = uvadownloader(self.urlQueue, self.path)</span><br><span class="line">        <span class="keyword">new</span><span class="type">thread</span>.start()</span><br><span class="line">        self.downlist.append(<span class="keyword">new</span><span class="type">thread</span>)</span><br><span class="line">    <span class="keyword">else</span>:                                                     <span class="type"></span>#其他的使用html转换pdf</span><br><span class="line">        <span class="keyword">new</span><span class="type">thread</span> = normalDownloader(self.urlQueue, self.path)</span><br><span class="line">        <span class="keyword">new</span><span class="type">thread</span>.start()</span><br><span class="line">        self.downlist.append(<span class="keyword">new</span><span class="type">thread</span>)</span><br></pre></td></tr></table></figure></p>
+<p>通过每0.2s一次输出实现进度<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">flag = <span class="keyword">False</span></span><br><span class="line"><span class="keyword">while</span> len(<span class="keyword">self</span>.idlist) &gt; <span class="number">0</span> <span class="keyword">or</span> not <span class="keyword">self</span>.urlQueue.<span class="keyword">empty</span>() <span class="keyword">or</span> not flag:</span><br><span class="line">    flag = <span class="keyword">True</span></span><br><span class="line">    <span class="keyword">if</span> len(<span class="keyword">self</span>.idlist) &gt; <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">print</span>(<span class="string">'remain '</span> + str(len(<span class="keyword">self</span>.idlist)) + <span class="string">' urls to parse...'</span>)</span><br><span class="line">    <span class="keyword">if</span> not <span class="keyword">self</span>.urlQueue.<span class="keyword">empty</span>():</span><br><span class="line">        <span class="keyword">print</span>(str(<span class="keyword">self</span>.urlQueue.qsize()) + <span class="string">' problems ready to download...'</span>)</span><br><span class="line">    <span class="keyword">for</span> i in <span class="keyword">self</span>.downlist:</span><br><span class="line">        <span class="keyword">if</span> i.working:</span><br><span class="line">            flag = <span class="keyword">False</span></span><br><span class="line">    time.sleep(<span class="number">0.2</span>)</span><br></pre></td></tr></table></figure></p>
+<p>下载器下载队列里的链接<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">uvadownloader</span>(<span class="title">threading</span>.<span class="title">Thread</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(<span class="keyword">self</span>, q, path)</span></span><span class="symbol">:</span></span><br><span class="line">        threading.Thread.__init_<span class="number">_</span>(<span class="keyword">self</span>)</span><br><span class="line">        <span class="keyword">self</span>.q = q              <span class="comment">#下载队列</span></span><br><span class="line">        <span class="keyword">self</span>.path = path        <span class="comment">#当前地址</span></span><br><span class="line">        <span class="keyword">self</span>.filename = <span class="string">""</span>      <span class="comment">#当前下载的文件的文件名 方便输出进度</span></span><br><span class="line">        <span class="keyword">self</span>.sch = <span class="number">0</span>            <span class="comment">#进度</span></span><br><span class="line">        <span class="keyword">self</span>.working = False    <span class="comment">#是否正在工作</span></span><br><span class="line">        <span class="keyword">self</span>.exitflag = False   <span class="comment">#结束标志</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(<span class="keyword">self</span>)</span></span><span class="symbol">:</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">#def reporthook(blocks, blocksize, total):</span></span><br><span class="line">        <span class="comment">#    self.sch = min(50, int(blocks * blocksize / total * 50))  #计算进度</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">download</span><span class="params">(url, ojName, proId)</span></span><span class="symbol">:</span></span><br><span class="line">            response = requests.get(url, params=values, headers=headers).content</span><br><span class="line">            soup = BeautifulSoup(response, <span class="string">'html.parser'</span>)</span><br><span class="line">            match = re.compile(r<span class="string">'href\\u003d\\u0027(.+?)\\u0027\\u003e'</span>)</span><br><span class="line">            originurl = re.findall(match, response.decode(<span class="string">'utf-8'</span>))</span><br><span class="line">            <span class="keyword">self</span>.filename = ojName + str(proId) + <span class="string">'.pdf'</span></span><br><span class="line">            fileurl = <span class="keyword">self</span>.path + <span class="string">'/'</span> + <span class="keyword">self</span>.filename</span><br><span class="line">            <span class="symbol">try:</span></span><br><span class="line">                urllib.request.urlretrieve(originurl[<span class="number">0</span>], fileurl)</span><br><span class="line">            <span class="symbol">except:</span></span><br><span class="line">                os.remove(fileurl)                               <span class="comment">#删除下载失败的文件</span></span><br><span class="line">                <span class="keyword">self</span>.q.put((url, ojName, proId))                 <span class="comment">#放回队列</span></span><br><span class="line">            <span class="comment">#print("Problem " + str(self.id) + " Done")</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> <span class="keyword">not</span> <span class="keyword">self</span>.<span class="symbol">exitflag:</span></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">self</span>.q.empty()<span class="symbol">:</span></span><br><span class="line">                links = <span class="keyword">self</span>.q.get()</span><br><span class="line">                <span class="keyword">self</span>.working = True</span><br><span class="line">                download(links[<span class="number">0</span>], links[<span class="number">1</span>], links[<span class="number">2</span>])</span><br><span class="line">                <span class="keyword">self</span>.sch = <span class="number">0</span></span><br><span class="line">                <span class="keyword">self</span>.working = False</span><br></pre></td></tr></table></figure></p>
+<p>其他OJ和UVA的下载器大致相同，将下载改成pdfkit转换即可<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    pdfkit.from_url(url, fileurl)</span><br><span class="line">except <span class="keyword">Exception</span> <span class="keyword">as</span> e:</span><br><span class="line">    os.remove(fileurl)                               <span class="comment">#删除下载失败的文件</span></span><br><span class="line">    <span class="keyword">self</span>.q.put((url, ojName, proId))                 <span class="comment">#放回队列</span></span><br></pre></td></tr></table></figure></p>
+<p><a href="https://github.com/winterfell30/downloadproblems" target="_blank" rel="noopener">两个版本的完整代码地址</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Python/">Python</a>, <a href="/tags/网络/">网络</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+
+<SCRIPT language=javascript>
+function search(formname) {
+    formname.method = "get";
+    formname.action = "http://www.google.com/google";
+    document.search_form.word.value = document.search_form.word.value + " site:wintefell30";
+    return true;
+}
+</SCRIPT>
+
+<div class="search">
+    <form name="search_form" target="_blank" onsubmit="search(this)">
+        <input type="search" name="word" results="0" placeholder="搜索" onblur="this.value=''">
+        <!-- <input type="submit" value="搜索"> -->
+    </form>
+</div>
+
+  <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=280 height=450 src="//music.163.com/outchain/player?type=0&id=118612228&auto=0&height=430"></iframe>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/C/">C++</a><small>11</small></li>
+  
+    <li><a href="/tags/Haskell/">Haskell</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux/">Linux</a><small>2</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>2</small></li>
+  
+    <li><a href="/tags/备忘/">备忘</a><small>1</small></li>
+  
+    <li><a href="/tags/杂记/">杂记</a><small>3</small></li>
+  
+    <li><a href="/tags/模板/">模板</a><small>1</small></li>
+  
+    <li><a href="/tags/系统/">系统</a><small>2</small></li>
+  
+    <li><a href="/tags/网络/">网络</a><small>4</small></li>
+  
+    <li><a href="/tags/资料/">资料</a><small>3</small></li>
+  
+    <li><a href="/tags/题解/">题解</a><small>6</small></li>
+  
+  </ul>
+</div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+    <ul class="entry">
+        
+          <li>
+            <a href="http://blog.bipedalbit.net/">Bipedalbit</a>
+          </li>
+        
+          <li>
+            <a href="http://ibrother.me">iBrother</a>
+          </li>
+        
+          <li>
+            <a href="http://midgar.moe/">Midgar</a>
+          </li>
+        
+          <li>
+            <a href="http://arcphase20.com/">phase</a>
+          </li>
+        
+          <li>
+            <a href="http://mycodebattle.com">PureFrog</a>
+          </li>
+        
+          <li>
+            <a href="http://www.cnblogs.com/qscqesze/">qscqesze</a>
+          </li>
+        
+          <li>
+            <a href="http://scalpel.vip/">Scalpel</a>
+          </li>
+        
+          <li>
+            <a href="http://www.sevenskey.xyz/365/index.html">Sevenskey</a>
+          </li>
+        
+          <li>
+            <a href="http://shield-sky.github.io/">Shield-sky</a>
+          </li>
+        
+          <li>
+            <a href="http://syhdaily.com/">Syhsyh9696</a>
+          </li>
+        
+          <li>
+            <a href="http://vvwall.com/">vvwall</a>
+          </li>
+        
+    </div>
+  </div>
+
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Winterfell30
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'winterfell30';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>

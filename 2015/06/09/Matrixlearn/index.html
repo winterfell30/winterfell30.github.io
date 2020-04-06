@@ -1,0 +1,282 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>十个利用矩阵乘法解决的经典题目（Matrix67) | winterfell30</title>
+  <meta name="author" content="Winterfell30">
+  
+  <meta name="description" content="Always Challenge Miracle">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="十个利用矩阵乘法解决的经典题目（Matrix67)">
+  <meta property="og:site_name" content="winterfell30">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="winterfell30" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+</html>
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">winterfell30</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about/index.html">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-06-09T13:28:52.000Z"><a href="/2015/06/09/Matrixlearn/">2015-06-09</a></time>
+      
+      
+  
+    <h1 class="title">十个利用矩阵乘法解决的经典题目（Matrix67)</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>RT<br><a id="more"></a></p>
+<p>做了一个用到矩阵快速幂的题目，然后看到了这么一篇转载自Matrix67的关于矩阵的文章，感觉很感兴趣就收藏过来了。<br>我学东西真是随心所欲啊。。。看到什么学什么，感觉这样不太好。<br>不过这也就是计算机一直吸引着我的原因吧。。。总是有新鲜有趣的东西，那又何苦逼迫着自己学东西呢。</p>
+<h2 id="Matrix67的博客地址就不发了，下面正文。"><a href="#Matrix67的博客地址就不发了，下面正文。" class="headerlink" title="Matrix67的博客地址就不发了，下面正文。"></a>Matrix67的博客地址就不发了，下面正文。</h2><p>好像目前还没有这方面题目的总结。这几天连续看到四个问这类题目的人，今天在这里简单写一下。这里我们不介绍其它有关矩阵的知识，只介绍矩阵乘法和相关性质。<br>    不要以为数学中的矩阵也是黑色屏幕上不断变化的绿色字符。在数学中，一个矩阵说穿了就是一个二维数组。一个n行m列的矩阵可以乘以一个m行p列的矩阵，得到的结果是一个n行p列的矩阵，其中的第i行第j列位置上的数等于前一个矩阵第i行上的m个数与后一个矩阵第j列上的m个数对应相乘后所有m个乘积的和。比如，下面的算式表示一个2行2列的矩阵乘以2行3列的矩阵，其结果是一个2行3列的矩阵。其中，结果的那个4等于2<em>2+0</em>1：</p>
+<pre><code>下面的算式则是一个1 x 3的矩阵乘以3 x 2的矩阵，得到一个1 x 2的矩阵：
+
+
+矩阵乘法的两个重要性质：一，矩阵乘法不满足交换律；二，矩阵乘法满足结合律。为什么矩阵乘法不满足交换律呢？废话，交换过来后两个矩阵有可能根本不能相乘。为什么它又满足结合律呢？仔细想想你会发现这也是废话。假设你有三个矩阵A、B、C，那么(AB)C和A(BC)的结果的第i行第j列上的数都等于所有A(ik)*B(kl)*C(lj)的和（枚举所有的k和l）。
+</code></pre><p>经典题目1 给定n个点，m个操作，构造O(m+n)的算法输出m个操作后各点的位置。操作有平移、缩放、翻转和旋转<br>    这里的操作是对所有点同时进行的。其中翻转是以坐标轴为对称轴进行翻转（两种情况），旋转则以原点为中心。如果对每个点分别进行模拟，那么m个操作总共耗时O(mn)。利用矩阵乘法可以在O(m)的时间里把所有操作合并为一个矩阵，然后每个点与该矩阵相乘即可直接得出最终该点的位置，总共耗时O(m+n)。假设初始时某个点的坐标为x和y，下面5个矩阵可以分别对其进行平移、旋转、翻转和旋转操作。预先把所有m个操作所对应的矩阵全部乘起来，再乘以(x,y,1)，即可一步得出最终点的位置。</p>
+<p>经典题目2 给定矩阵A，请快速计算出A^n（n个A相乘）的结果，输出的每个数都mod p。<br>    由于矩阵乘法具有结合律，因此A^4 = A <em> A </em> A <em> A = (A</em>A) <em> (A</em>A) = A^2 <em> A^2。我们可以得到这样的结论：当n为偶数时，A^n = A^(n/2) </em> A^(n/2)；当n为奇数时，A^n = A^(n/2) <em> A^(n/2) </em> A （其中n/2取整）。这就告诉我们，计算A^n也可以使用二分快速求幂的方法。例如，为了算出A^25的值，我们只需要递归地计算出A^12、A^6、A^3的值即可。根据这里的一些结果，我们可以在计算过程中不断取模，避免高精度运算。</p>
+<p>经典题目3 POJ3233 (感谢rmq)<br>    题目大意：给定矩阵A，求A + A^2 + A^3 + … + A^k的结果（两个矩阵相加就是对应位置分别相加）。输出的数据mod m。k&lt;=10^9。<br>    这道题两次二分，相当经典。首先我们知道，A^i可以二分求出。然后我们需要对整个题目的数据规模k进行二分。比如，当k=6时，有：<br>    A + A^2 + A^3 + A^4 + A^5 + A^6 =(A + A^2 + A^3) + A^3*(A + A^2 + A^3)<br>    应用这个式子后，规模k减小了一半。我们二分求出A^3后再递归地计算A + A^2 + A^3，即可得到原问题的答案。</p>
+<p>经典题目4 VOJ1049<br>    题目大意：顺次给出m个置换，反复使用这m个置换对初始序列进行操作，问k次置换后的序列。m&lt;=10, k&lt;2^31。<br>    首先将这m个置换“合并”起来（算出这m个置换的乘积），然后接下来我们需要执行这个置换k/m次（取整，若有余数则剩下几步模拟即可）。注意任意一个置换都可以表示成矩阵的形式。例如，将1 2 3 4置换为3 1 2 4，相当于下面的矩阵乘法：</p>
+<pre><code>置换k/m次就相当于在前面乘以k/m个这样的矩阵。我们可以二分计算出该矩阵的k/m次方，再乘以初始序列即可。做出来了别忙着高兴，得意之时就是你灭亡之日，别忘了最后可能还有几个置换需要模拟。
+</code></pre><p>经典题目5 《算法艺术与信息学竞赛》207页（2.1代数方法和模型，[例题5]细菌，版次不同可能页码有偏差）<br>    大家自己去看看吧，书上讲得很详细。解题方法和上一题类似，都是用矩阵来表示操作，然后二分求最终状态。</p>
+<p>经典题目6 给定n和p，求第n个Fibonacci数mod p的值，n不超过2^31<br>    根据前面的一些思路，现在我们需要构造一个2 x 2的矩阵，使得它乘以(a,b)得到的结果是(b,a+b)。每多乘一次这个矩阵，这两个数就会多迭代一次。那么，我们把这个2 x 2的矩阵自乘n次，再乘以(0,1)就可以得到第n个Fibonacci数了。不用多想，这个2 x 2的矩阵很容易构造出来：</p>
+<p>经典题目7 VOJ1067<br>    我们可以用上面的方法二分求出任何一个线性递推式的第n项，其对应矩阵的构造方法为：在右上角的(n-1)*(n-1)的小矩阵中的主对角线上填1，矩阵第n行填对应的系数，其它地方都填0。例如，我们可以用下面的矩阵乘法来二分计算f(n) = 4f(n-1) - 3f(n-2) + 2f(n-4)的第k项：</p>
+<pre><code>利用矩阵乘法求解线性递推关系的题目我能编出一卡车来。这里给出的例题是系数全为1的情况。
+</code></pre><p>经典题目8 给定一个有向图，问从A点恰好走k步（允许重复经过边）到达B点的方案数mod p的值<br>    把给定的图转为邻接矩阵，即A(i,j)=1当且仅当存在一条边i-&gt;j。令C=A<em>A，那么C(i,j)=ΣA(i,k)</em>A(k,j)，实际上就等于从点i到点j恰好经过2条边的路径数（枚举k为中转点）。类似地，C*A的第i行第j列就表示从i到j经过3条边的路径数。同理，如果要求经过k步的路径数，我们只需要二分求出A^k即可。</p>
+<p>经典题目9 用1 x 2的多米诺骨牌填满M x N的矩形有多少种方案，M&lt;=5，N&lt;2^31，输出答案mod p的结果</p>
+<pre><code>我们以M=3为例进行讲解。假设我们把这个矩形横着放在电脑屏幕上，从右往左一列一列地进行填充。其中前n-2列已经填满了，第n-1列参差不齐。现在我们要做的事情是把第n-1列也填满，将状态转移到第n列上去。由于第n-1列的状态不一样（有8种不同的状态），因此我们需要分情况进行讨论。在图中，我把转移前8种不同的状态放在左边，转移后8种不同的状态放在右边，左边的某种状态可以转移到右边的某种状态就在它们之间连一根线。注意为了保证方案不重复，状态转移时我们不允许在第n-1列竖着放一个多米诺骨牌（例如左边第2种状态不能转移到右边第4种状态），否则这将与另一种转移前的状态重复。把这8种状态的转移关系画成一个有向图，那么问题就变成了这样：从状态111出发，恰好经过n步回到这个状态有多少种方案。比如，n=2时有3种方案，111-&gt;011-&gt;111、111-&gt;110-&gt;111和111-&gt;000-&gt;111，这与用多米诺骨牌覆盖3x2矩形的方案一一对应。这样这个题目就转化为了我们前面的例题8。
+后面我写了一份此题的源代码。你可以再次看到位运算的相关应用。
+</code></pre><p>经典题目10 POJ2778<br>    题目大意是，检测所有可能的n位DNA串有多少个DNA串中不含有指定的病毒片段。合法的DNA只能由ACTG四个字符构成。题目将给出10个以内的病毒片段，每个片段长度不超过10。数据规模n&lt;=2 000 000 000。<br>    下面的讲解中我们以ATC,AAA,GGC,CT这四个病毒片段为例，说明怎样像上面的题一样通过构图将问题转化为例题8。我们找出所有病毒片段的前缀，把n位DNA分为以下7类：以AT结尾、以AA结尾、以GG结尾、以?A结尾、以?G结尾、以?C结尾和以??结尾。其中问号表示“其它情况”，它可以是任一字母，只要这个字母不会让它所在的串成为某个病毒的前缀。显然，这些分类是全集的一个划分（交集为空，并集为全集）。现在，假如我们已经知道了长度为n-1的各类DNA中符合要求的DNA个数，我们需要求出长度为n时各类DNA的个数。我们可以根据各类型间的转移构造一个边上带权的有向图。例如，从AT不能转移到AA，从AT转移到??有4种方法（后面加任一字母），从?A转移到AA有1种方案（后面加个A），从?A转移到??有2种方案（后面加G或C），从GG到??有2种方案（后面加C将构成病毒片段，不合法，只能加A和T）等等。这个图的构造过程类似于用有限状态自动机做串匹配。然后，我们就把这个图转化成矩阵，让这个矩阵自乘n次即可。最后输出的是从??状态到所有其它状态的路径数总和。<br>    题目中的数据规模保证前缀数不超过100，一次矩阵乘法是三方的，一共要乘log(n)次。因此这题总的复杂度是100^3 * log(n)，AC了。</p>
+<pre><code>最后给出第9题的代码供大家参考（今天写的，熟悉了一下C++的类和运算符重载）。为了避免大家看代码看着看着就忘了，我把这句话放在前面来说：
+Matrix67原创，转贴请注明出处。
+</code></pre><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SIZE (1&lt;&lt;m)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX_SIZE 32</span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CMatrix</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="keyword">long</span> element[MAX_SIZE][MAX_SIZE];</span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">setSize</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">setModulo</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span><br><span class="line">        CMatrix <span class="keyword">operator</span>* (CMatrix);</span><br><span class="line">        <span class="function">CMatrix <span class="title">power</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        <span class="keyword">int</span> <span class="built_in">size</span>;</span><br><span class="line">        <span class="keyword">long</span> modulo;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">CMatrix::setSize</span><span class="params">(<span class="keyword">int</span> a)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;a; i++)</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>; j&lt;a; j++)</span><br><span class="line">            element[i][j]=<span class="number">0</span>;</span><br><span class="line">    <span class="built_in">size</span> = a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">CMatrix::setModulo</span><span class="params">(<span class="keyword">int</span> a)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    modulo = a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">CMatrix CMatrix::<span class="keyword">operator</span>* (CMatrix param)</span><br><span class="line">&#123;</span><br><span class="line">    CMatrix product;</span><br><span class="line">    product.setSize(<span class="built_in">size</span>);</span><br><span class="line">    product.setModulo(modulo);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="built_in">size</span>; i++)</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>; j&lt;<span class="built_in">size</span>; j++)</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k=<span class="number">0</span>; k&lt;<span class="built_in">size</span>; k++)</span><br><span class="line">            &#123;</span><br><span class="line">                product.element[i][j]+=element[i][k]*param.element[k][j];</span><br><span class="line">                product.element[i][j]%=modulo;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> product;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">CMatrix <span class="title">CMatrix::power</span><span class="params">(<span class="keyword">int</span> <span class="built_in">exp</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    CMatrix tmp = (*<span class="keyword">this</span>) * (*<span class="keyword">this</span>);</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">exp</span>==<span class="number">1</span>) <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">exp</span> &amp; <span class="number">1</span>) <span class="keyword">return</span> tmp.power(<span class="built_in">exp</span>/<span class="number">2</span>) * (*<span class="keyword">this</span>);</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> tmp.power(<span class="built_in">exp</span>/<span class="number">2</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> validSet[]=&#123;<span class="number">0</span>,<span class="number">3</span>,<span class="number">6</span>,<span class="number">12</span>,<span class="number">15</span>,<span class="number">24</span>,<span class="number">27</span>,<span class="number">30</span>&#125;;</span><br><span class="line">    <span class="keyword">long</span> n, m, p;</span><br><span class="line">    CMatrix unit;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d%d%d"</span>, &amp;n, &amp;m, &amp;p);</span><br><span class="line">    unit.setSize(SIZE);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;SIZE; i++)</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>; j&lt;SIZE; j++)</span><br><span class="line">            <span class="keyword">if</span>( ((~i)&amp;j) == ((~i)&amp;(SIZE<span class="number">-1</span>)) )</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">bool</span> <span class="built_in">isValid</span>=<span class="literal">false</span>;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> k=<span class="number">0</span>; k&lt;<span class="number">8</span>; k++)<span class="built_in">isValid</span>=<span class="built_in">isValid</span>||(i&amp;j)==validSet[k];</span><br><span class="line">                unit.element[i][j]=<span class="built_in">isValid</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">    unit.setModulo(p);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%d"</span>, unit.power(n).element[SIZE<span class="number">-1</span>][SIZE<span class="number">-1</span>] );</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/资料/">资料</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+
+<SCRIPT language=javascript>
+function search(formname) {
+    formname.method = "get";
+    formname.action = "http://www.google.com/google";
+    document.search_form.word.value = document.search_form.word.value + " site:wintefell30";
+    return true;
+}
+</SCRIPT>
+
+<div class="search">
+    <form name="search_form" target="_blank" onsubmit="search(this)">
+        <input type="search" name="word" results="0" placeholder="搜索" onblur="this.value=''">
+        <!-- <input type="submit" value="搜索"> -->
+    </form>
+</div>
+
+  <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=280 height=450 src="//music.163.com/outchain/player?type=0&id=118612228&auto=0&height=430"></iframe>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/C/">C++</a><small>11</small></li>
+  
+    <li><a href="/tags/Haskell/">Haskell</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux/">Linux</a><small>2</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>2</small></li>
+  
+    <li><a href="/tags/备忘/">备忘</a><small>1</small></li>
+  
+    <li><a href="/tags/杂记/">杂记</a><small>3</small></li>
+  
+    <li><a href="/tags/模板/">模板</a><small>1</small></li>
+  
+    <li><a href="/tags/系统/">系统</a><small>2</small></li>
+  
+    <li><a href="/tags/网络/">网络</a><small>4</small></li>
+  
+    <li><a href="/tags/资料/">资料</a><small>3</small></li>
+  
+    <li><a href="/tags/题解/">题解</a><small>6</small></li>
+  
+  </ul>
+</div>
+
+
+  
+  <div class="widget tag">
+    <h3 class="title">友情链接</h3>
+    <ul class="entry">
+        
+          <li>
+            <a href="http://blog.bipedalbit.net/">Bipedalbit</a>
+          </li>
+        
+          <li>
+            <a href="http://ibrother.me">iBrother</a>
+          </li>
+        
+          <li>
+            <a href="http://midgar.moe/">Midgar</a>
+          </li>
+        
+          <li>
+            <a href="http://arcphase20.com/">phase</a>
+          </li>
+        
+          <li>
+            <a href="http://mycodebattle.com">PureFrog</a>
+          </li>
+        
+          <li>
+            <a href="http://www.cnblogs.com/qscqesze/">qscqesze</a>
+          </li>
+        
+          <li>
+            <a href="http://scalpel.vip/">Scalpel</a>
+          </li>
+        
+          <li>
+            <a href="http://www.sevenskey.xyz/365/index.html">Sevenskey</a>
+          </li>
+        
+          <li>
+            <a href="http://shield-sky.github.io/">Shield-sky</a>
+          </li>
+        
+          <li>
+            <a href="http://syhdaily.com/">Syhsyh9696</a>
+          </li>
+        
+          <li>
+            <a href="http://vvwall.com/">vvwall</a>
+          </li>
+        
+    </div>
+  </div>
+
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Winterfell30
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'winterfell30';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>
