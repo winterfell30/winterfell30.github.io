@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.winterfell30.com/2020/04/10/new-start/</loc>
+    
+    <lastmod>2020-04-11T04:28:21.779Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.winterfell30.com/2016/12/31/goodbye2016/</loc>
+    
+    <lastmod>2020-04-10T06:56:35.685Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.winterfell30.com/about/index.html</loc>
     
     <lastmod>2020-04-06T14:40:58.953Z</lastmod>
@@ -75,13 +89,6 @@
     <loc>http://www.winterfell30.com/2016/12/28/nullpointerclass/</loc>
     
     <lastmod>2017-01-22T03:04:41.004Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.winterfell30.com/2016/12/31/goodbye2016/</loc>
-    
-    <lastmod>2017-01-11T16:15:06.289Z</lastmod>
     
   </url>
   
@@ -222,13 +229,6 @@
     <loc>http://www.winterfell30.com/2016/11/19/cppprimer12/</loc>
     
     <lastmod>2016-11-23T08:08:25.735Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.winterfell30.com/2016/11/15/anotherbeginning/</loc>
-    
-    <lastmod>2016-11-23T08:08:20.039Z</lastmod>
     
   </url>
   
