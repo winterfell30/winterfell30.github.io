@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.winterfell30.com/"/>
-  <updated>2020-04-11T10:43:20.197Z</updated>
+  <updated>2020-04-22T15:12:50.317Z</updated>
   <id>http://www.winterfell30.com/</id>
   
   <author>
@@ -15,6 +15,25 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>DDIA 第一部分笔记（前四章）</title>
+    <link href="http://www.winterfell30.com/2020/04/22/ddia-part1/"/>
+    <id>http://www.winterfell30.com/2020/04/22/ddia-part1/</id>
+    <published>2020-04-22T02:16:58.000Z</published>
+    <updated>2020-04-22T15:12:50.317Z</updated>
+    
+    <content type="html"><![CDATA[<p>第 1 章、可靠可扩展与可维护的应用系统<br>第 2 章、数据模型与查询语言<br>第 3 章、数据存储与检索<br>第 4 章、数据编码与演化<br><a id="more"></a><br><img src="https://s1.ax1x.com/2020/04/22/JUdFN4.png" alt><br><img src="https://s1.ax1x.com/2020/04/22/JUdiEF.png" alt><br><img src="https://s1.ax1x.com/2020/04/22/JUdEC9.png" alt><br><img src="https://s1.ax1x.com/2020/04/22/JUdk4J.png" alt></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;第 1 章、可靠可扩展与可维护的应用系统&lt;br&gt;第 2 章、数据模型与查询语言&lt;br&gt;第 3 章、数据存储与检索&lt;br&gt;第 4 章、数据编码与演化&lt;br&gt;
+    
+    </summary>
+    
+    
+    
+  </entry>
   
   <entry>
     <title>第一次离职</title>
